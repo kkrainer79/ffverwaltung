@@ -1,0 +1,182 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+@import "~@fortawesome/fontawesome-free/css/all.min.css";
+@import "~animate.css/animate.min.css";
+@import "~bootstrap-table/dist/bootstrap-table.min.css";
+
+@import "./modules/floatingActionButton.css";
+@import "./modules/vueStyles.css";
+
+:root {
+  --darkgrey: #212529;
+  --lightgrey: #DDDCCB;
+  --petrol: #1d7973;
+  --darkpetrol:#003f3b;
+  --green: #63a95b;
+  --orange: #db4437;
+  --red: #bf2929;
+  --white: #f1f8f7;
+  --lightorange: #e48128;
+}
+
+
+.headline {
+  color: var(--red);
+  text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
+  -webkit-text-stroke: 1px var(--white);
+}
+.pic-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 400px;
+}
+.btn-logout {
+  font-weight: 700;
+  color:var(--lightgrey);
+  background-color: var(--orange);
+}
+
+.btn-logout:hover {
+  background-color: var(--red);
+  color: var(--white);
+}
+.btn-ffp {
+  background-color: var(--petrol);
+  color: var(--lightgrey);
+  font-weight: bold;
+}
+.btn-ffp:hover {
+  background-color: var(--green);
+  color: var(--lightgrey);
+  
+}
+.btn-cancel {
+  background-color: var(--orange);
+  color:#ffffff;
+  font-weight: bold;
+}
+
+.btn-cancel:hover {
+  background-color: var(--red);
+}
+.login-container {
+  text-align: center;
+  position: relative;
+}
+.copyright {
+  position: absolute;
+  bottom: 5px;
+}
+.navbar-img {
+  max-height: 50px;
+}
+.nav-link {
+  color: var(--darkgrey)
+}
+.nav-link:hover {
+  color: var(--lightgrey);
+  border-radius: 3px;
+}
+.navbar-icon:hover {
+  color: var(--lightgrey);
+}
+.navbar-ffp {
+  font-size: 1.5em;
+  text-transform: uppercase;
+  font-weight: 700;
+  background-color: var(--petrol);
+  color: var(--darkgrey);
+}
+
+#userNotification {
+  box-shadow: 2px 2px 3px#909090;
+  margin: 15px;
+  padding: 10px;
+  border-radius: 5px;
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  z-index:99;
+}
+.fa-solid, .fa-circle-check {
+  display: inline-block;
+  width: 100%;
+}
+.faIcon {
+  font-size: 50px;
+  text-align: center;
+  margin: 3px 0px 10px 0px;
+}
+.userNotificationTitle {
+  font-weight: 500;
+}
+.input-label {
+  margin-left: 8px;
+}
+.input-label:checked {
+  background-color: #ffffff;
+  color:#000000;
+}
+.table-hover {
+cursor: pointer;
+}
+.th-ffp {
+  background-color: var(--petrol) !important;
+  color: var(--darkgrey) !important;
+  font-weight: 700 !important;
+}
+.filter-input {
+  padding-left: 4px;
+}
+.filter-input[type="number"] {
+  width: 50px;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0px;
+}
+
+.th-icon {
+  text-align: center;
+  background-color: var(--petrol) !important;
+  color: var(--lightgrey);
+}
+.th-icon-active {
+  text-align: center;
+  background-color: var(--petrol) !important;
+  color: var(--red);
+}
+.detail-label {
+  font-weight: 700;
+}
+
+.detail-img {
+  border-radius: 5px;
+}
+.review-icon{
+  line-height: inherit;
+}
+.review-card-header{
+  text-transform: uppercase;
+  font-size: 24px;
+  background-color: var(--petrol);
+  color: var(--darkgrey);
+  font-weight: 700;
+}
+.review-found{
+  background-color: var(--green);
+  font-weight: 700;
+  color: var(--darkgrey);
+}
+
+.review-textarea{
+  height: 10em;
+}
+.review-capture-card{
+  background-color: var(--orange);
+  color: var(--lightgrey);
+  font-weight: 700;
+}

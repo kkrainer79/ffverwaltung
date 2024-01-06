@@ -1,0 +1,214 @@
+/* FLOATING ACTION BUTTON */
+@import "~bootstrap/dist/css/bootstrap.min.css";
+@import "~@fortawesome/fontawesome-free/css/all.min.css";
+@import "~animate.css/animate.min.css";
+@import "~bootstrap-table/dist/bootstrap-table.min.css";
+
+
+  #floating-button{
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: var(--orange);
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    cursor: pointer;
+    box-shadow: 0px 2px 10px rgba(0,0,0,0.2);
+  }
+  
+  .mainfab-front{
+    color: var(--lightgrey);
+    position: absolute;
+    top: 0;
+    display: block;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    line-height: 70px;
+    font-size: 38px;
+    animation: plus-out 0.3s;
+    transition: all 0.3s;
+  }
+  
+  #container-floating{
+    position: fixed;
+    width: 70px;
+    height: 70px;
+    bottom: 30px;
+    right: 30px;
+    z-index: 50px;
+  }
+  
+  #container-floating:hover{
+    height: 400px;
+    width: 90px;
+    padding: 30px;
+    background-color: transparent;
+  }
+  
+  #container-floating:hover .mainfab-front{
+    animation: mainfab-front-in 0.15s linear;
+    animation-fill-mode: forwards;
+  }
+  
+  .mainfab-active{
+    position: absolute;
+    top: 0;
+    display: block;
+    bottom: 0;
+    left: 0;
+    font-size: 38px;
+    text-align: center;
+    display: block;
+    right: 0;
+    padding: 0;
+    opacity: 0;
+    margin: auto;
+    line-height: 70px;
+    transform: rotateZ(-70deg);
+    transition: all 0.3s;
+    animation: mainfab-active-out 0.3s;
+  }
+  
+  #container-floating:hover .mainfab-active{
+    animation: mainfab-active-in 0.2s;
+     animation-delay: 0.1s;
+    animation-fill-mode: forwards;
+  }
+  
+  @keyframes mainfab-active-in{
+      from {opacity: 0; transform: rotateZ(-70deg);}
+      to {opacity: 1; transform: rotateZ(0deg);}
+  }
+  
+  @keyframes mainfab-active-out{
+      from {opacity: 1; transform: rotateZ(0deg);}
+      to {opacity: 0; transform: rotateZ(-70deg);}
+  }
+  
+  @keyframes mainfab-front-in{
+      from {opacity: 1; transform: rotateZ(0deg);}
+      to {opacity: 0; transform: rotateZ(180deg);}
+  }
+  
+  @keyframes mainfab-front-out{
+      from {opacity: 0; transform: rotateZ(180deg);}
+      to {opacity: 1; transform: rotateZ(0deg);}
+  }
+  
+  .subfab{
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    line-height: 58px;
+    font-size: 28px;
+    border-radius: 50%;
+    position: fixed;
+    z-index: 300;
+    transform:  scale(0);
+    cursor: pointer;
+  }
+
+  .subfab1{
+    right: 36px;
+    bottom: 120px;
+    animation-delay: 0.5s;
+      animation: bounce-out-subfab 0.3s linear;
+    animation-fill-mode:  forwards;
+  }
+ 
+  .subfab2{
+    right: 36px;
+    bottom: 190px;
+    animation-delay: 0.4s;
+      animation: bounce-out-subfab 0.25s linear;
+    animation-fill-mode:  forwards;
+  }
+  
+  .subfab3{
+    right: 36px;
+    bottom: 260px;
+    animation-delay: 0.3s;
+      animation: bounce-out-subfab 0.2s linear;
+    animation-fill-mode:  forwards;
+  }
+  
+  .subfab4{
+    right: 36px;
+    bottom: 330px;
+    animation-delay: 0.2s;
+      animation: bounce-out-subfab 0.15s linear;
+    animation-fill-mode:  forwards;
+  }
+
+  .subfab5{
+    right: 36px;
+    bottom: 400px;
+    animation-delay: 0.1s;
+      animation: bounce-out-subfab 0.1s linear;
+    animation-fill-mode:  forwards;
+  }
+
+  .sub-display{
+    display: none;
+  }
+
+  .sub-yellow{
+    background: var(--lightorange);
+    color: var(--lightgrey);
+  }
+  .sub-petrol{
+    background: var(--petrol);
+    color: var(--lightgrey);
+  }
+  .sub-red{
+    background-color: var(--red);
+    color: var(--lightgrey);
+  }
+  .sub-orange{
+    background-color: var(--orange);
+    color: var(--lightgrey);
+  }
+  .sub-lightgrey{
+    background-color: var(--lightgrey);
+    color: var(--darkgrey);
+  }
+
+  @keyframes bounce-subfab{
+      from {opacity: 0;}
+      to {opacity: 1; transform: scale(1);}
+  }
+  
+  @keyframes bounce-out-subfab{
+      from {opacity: 1; transform: scale(1);}
+      to {opacity: 0; transform: scale(0);}
+  }
+  
+  #container-floating:hover .subfab{
+    
+    animation: bounce-subfab 0.1s linear;
+    animation-fill-mode:  forwards;
+  }
+  #container-floating:hover .subfab1{
+    animation-delay: 0.03s;
+  }
+  #container-floating:hover .subfab2{
+    animation-delay: 0.06s;
+  }
+
+  #container-floating:hover .subfab3{
+    animation-delay: 0.09s;
+  }
+  #container-floating:hover .subfab4{
+    animation-delay: 0.12s;
+  }
+  #container-floating:hover .subfab5{
+    animation-delay: 0.15s;
+  }
+  
+  
+  /* END FLOATING ACTION BUTTON */

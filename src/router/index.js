@@ -1,25 +1,42 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from "vue-router";
+import LoginPage from "@pages/LoginPage.vue";
+import PortalPage from "@pages/PortalPage.vue";
+import store from "@/store/index.js";
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
+    name: "loginPage",
+    path: "/",
+    component: LoginPage,
+    beforeEnter: (to, from, next) => {
+      if (store.getters.isAuthenticated) {
+        next("/portal");
+      } else {
+        next();
+      }
+    }
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
-]
+    name: "portalPage",
+    path: "/portal",
+    component: PortalPage,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
-})
+  routes,
+});
 
-export default router
+// GLOBALER NAVIGATION GUARD
+// greift auf "requiresAuth" im meta-Attribut der Routes zu
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth && !store.getters.isAuthenticated) {
+    next({ name: "loginPage" });
+  } else next();
+});
+
+export default router;

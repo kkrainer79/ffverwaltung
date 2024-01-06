@@ -1,0 +1,14 @@
+/* VUE-TRANSITIONS */
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.25s ease-out;
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+}
+.fade-leave-to,
+.fade-enter-from {
+  opacity: 0;
+}

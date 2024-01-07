@@ -214,7 +214,7 @@
             @click="changeComponent('EquipmentDetail', equipment.equipmentId)"
           >
             <i
-              class="fa-solid fa-circle-info"
+              class="fa-solid fa-circle-info table-icon"
               title="Details"
               type="button"
             ></i>
@@ -223,14 +223,14 @@
             class="text-center"
             @click="doSomething('EquipmentDetail', equipment.equipmentId)"
           >
-            <i class="fa-solid fa-pencil" title="bearbeiten" type="button"></i>
+            <i class="fa-solid fa-pencil table-icon" title="bearbeiten" type="button"></i>
           </td>
           <td
             class="text-center"
             @click="doSomething('EquipmentDetail', equipment.equipmentId)"
           >
             <i
-              class="fa-solid fa-arrow-right-from-bracket"
+              class="fa-solid fa-arrow-right-from-bracket table-icon"
               title="ausscheiden"
               type="button"
             ></i>
@@ -240,7 +240,7 @@
             @click="doSomething('EquipmentDetail', equipment.equipmentId)"
           >
             <i
-              class="fa-regular fa-trash-can"
+              class="fa-regular fa-trash-can table-icon"
               title="löschen"
               type="button"
             ></i>
@@ -484,6 +484,10 @@ export default {
 
     changeComponent(componentName, id) {
       this.$emit("change-component", { componentName, id });
+    },
+
+    doSomething() {
+      console.log("Do something");
     },
 
     fabListener(payload) {

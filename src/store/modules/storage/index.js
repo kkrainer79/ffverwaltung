@@ -81,11 +81,9 @@ const actions = {
 
   getEquipmentId(context) {
     //holt nächste freie EquipmentId vom Server
-    console.log("getEquipmentId");
     const docRef = doc(firestore, "configData", "ZocUScAesXH8ijJPqfTu");
     getDoc(docRef)
       .then((response) => {
-
         let id = Number(
           response._document.data.value.mapValue.fields.equIdCounter
             .integerValue
@@ -137,7 +135,7 @@ const actions = {
           context.commit("setImgUrl", response);
         })
         .catch((error) => {
-          console.log('ERROR: ' + error);
+          console.log("ERROR: " + error);
         });
     }
   },

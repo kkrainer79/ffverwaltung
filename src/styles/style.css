@@ -8,16 +8,15 @@
 
 :root {
   --darkgrey: #212529;
-  --lightgrey: #DDDCCB;
+  --lightgrey: #dddccb;
   --petrol: #1d7973;
-  --darkpetrol:#003f3b;
+  --darkpetrol: #003f3b;
   --green: #63a95b;
   --orange: #db4437;
   --red: #bf2929;
   --white: #f1f8f7;
   --lightorange: #e48128;
 }
-
 
 .headline {
   color: var(--red);
@@ -34,7 +33,7 @@
 }
 .btn-logout {
   font-weight: 700;
-  color:var(--lightgrey);
+  color: var(--lightgrey);
   background-color: var(--orange);
 }
 
@@ -50,11 +49,10 @@
 .btn-ffp:hover {
   background-color: var(--green);
   color: var(--lightgrey);
-  
 }
 .btn-cancel {
   background-color: var(--orange);
-  color:#ffffff;
+  color: #ffffff;
   font-weight: bold;
 }
 
@@ -73,7 +71,7 @@
   max-height: 50px;
 }
 .nav-link {
-  color: var(--darkgrey)
+  color: var(--darkgrey);
 }
 .nav-link:hover {
   color: var(--lightgrey);
@@ -98,9 +96,10 @@
   position: fixed;
   top: 0px;
   right: 0px;
-  z-index:99;
+  z-index: 99;
 }
-.fa-solid, .fa-circle-check {
+.fa-solid,
+.fa-circle-check {
   display: inline-block;
   width: 100%;
 }
@@ -117,10 +116,10 @@
 }
 .input-label:checked {
   background-color: #ffffff;
-  color:#000000;
+  color: #000000;
 }
 .table-hover {
-cursor: pointer;
+  cursor: pointer;
 }
 .th-ffp {
   background-color: var(--petrol) !important;
@@ -147,7 +146,7 @@ input::-webkit-inner-spin-button {
 .th-icon-active {
   text-align: center;
   background-color: var(--petrol) !important;
-  color: var(--red);
+  color: var(--orange);
 }
 .detail-label {
   font-weight: 700;
@@ -156,27 +155,30 @@ input::-webkit-inner-spin-button {
 .detail-img {
   border-radius: 5px;
 }
-.review-icon{
+.review-icon {
   line-height: inherit;
 }
-.review-card-header{
+.review-card-header {
   text-transform: uppercase;
   font-size: 24px;
   background-color: var(--petrol);
   color: var(--darkgrey);
   font-weight: 700;
 }
-.review-found{
+.review-found {
   background-color: var(--green);
   font-weight: 700;
   color: var(--darkgrey);
 }
 
-.review-textarea{
+.review-textarea {
   height: 10em;
 }
-.review-capture-card{
+.review-capture-card {
   background-color: var(--orange);
   color: var(--lightgrey);
   font-weight: 700;
+}
+.table-icon:hover {
+  color: var(--orange);
 }

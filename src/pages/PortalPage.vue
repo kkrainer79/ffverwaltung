@@ -14,7 +14,7 @@
 
 <script>
 import DashboardPage from "@pages/DashboardPage.vue";
-import BekleidungPage from "@pages/BekleidungPage.vue";
+import ClothingPage from "@pages/ClothingPage.vue";
 import EquipmentPage from "@pages/EquipmentPage.vue";
 import AtemschutzPage from "@pages/AtemschutzPage.vue";
 import TheNavBar from "@components/TheNavBar.vue";
@@ -31,7 +31,7 @@ export default {
   components: {
     TheNavBar,
     DashboardPage,
-    BekleidungPage,
+    ClothingPage,
     EquipmentPage,
     AtemschutzPage,
     UserNotification,

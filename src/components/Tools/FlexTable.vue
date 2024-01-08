@@ -1,12 +1,11 @@
 <template>
   <div>
-    <h1>EQUIPMENT-ÜBERSICHT</h1>
+    <h1>{{title}}</h1>
     <table id="dataTable" class="table table-hover table-bordered">
       <thead>
-        <!-- HEADER -->
         <tr id="header">
           <th v-if="!isSorted[0]" class="th-ffp" @click="sortTable(0)" id="0">
-            ID
+            {{this.columnTitles[0]}}
           </th>
           <th
             v-if="isSorted[0] && this.dir === 'asc'"
@@ -14,7 +13,7 @@
             @click="sortTable(0)"
             id="0"
           >
-            ID &#x2BC5;
+          {{this.columnTitles[0]}} &#x2BC5;
           </th>
           <th
             v-if="isSorted[0] && this.dir === 'desc'"
@@ -22,10 +21,10 @@
             @click="sortTable(0)"
             id="0"
           >
-            ID &#x2BC6;
+          {{this.columnTitles[0]}} &#x2BC6;
           </th>
           <th v-if="!isSorted[1]" class="th-ffp" @click="sortTable(1)" id="0">
-            BEZEICHNUNG
+            {{this.columnTitles[1]}}
           </th>
           <th
             v-if="isSorted[1] && this.dir === 'asc'"
@@ -33,7 +32,7 @@
             @click="sortTable(1)"
             id="0"
           >
-            BEZEICHNUNG &#x2BC5;
+          {{this.columnTitles[1]}} &#x2BC5;
           </th>
           <th
             v-if="isSorted[1] && this.dir === 'desc'"
@@ -41,10 +40,10 @@
             @click="sortTable(1)"
             id="0"
           >
-            BEZEICHNUNG &#x2BC6;
+          {{this.columnTitles[1]}} &#x2BC6;
           </th>
           <th v-if="!isSorted[2]" class="th-ffp" @click="sortTable(2)" id="0">
-            HERSTELLER
+            {{this.columnTitles[2]}}
           </th>
           <th
             v-if="isSorted[2] && this.dir === 'asc'"
@@ -52,7 +51,7 @@
             @click="sortTable(2)"
             id="0"
           >
-            HERSTELLER &#x2BC5;
+          {{this.columnTitles[2]}} &#x2BC5;
           </th>
           <th
             v-if="isSorted[2] && this.dir === 'desc'"
@@ -60,10 +59,10 @@
             @click="sortTable(2)"
             id="0"
           >
-            HERSTELLER &#x2BC6;
+          {{this.columnTitles[2]}} &#x2BC6;
           </th>
           <th v-if="!isSorted[3]" class="th-ffp" @click="sortTable(3)" id="0">
-            TYPE
+            {{this.columnTitles[3]}}
           </th>
           <th
             v-if="isSorted[3] && this.dir === 'asc'"
@@ -71,7 +70,7 @@
             @click="sortTable(3)"
             id="0"
           >
-            TYPE &#x2BC5;
+          {{this.columnTitles[3]}} &#x2BC5;
           </th>
           <th
             v-if="isSorted[3] && this.dir === 'desc'"
@@ -79,10 +78,10 @@
             @click="sortTable(3)"
             id="0"
           >
-            TYPE &#x2BC6;
+          {{this.columnTitles[3]}} &#x2BC6;
           </th>
           <th v-if="!isSorted[4]" class="th-ffp" @click="sortTable(4)" id="0">
-            KATEGORIE
+            {{this.columnTitles[4]}}
           </th>
           <th
             v-if="isSorted[4] && this.dir === 'asc'"
@@ -90,7 +89,7 @@
             @click="sortTable(4)"
             id="0"
           >
-            KATEGORIE &#x2BC5;
+          {{this.columnTitles[4]}} &#x2BC5;
           </th>
           <th
             v-if="isSorted[4] && this.dir === 'desc'"
@@ -98,10 +97,10 @@
             @click="sortTable(4)"
             id="0"
           >
-            KATEGORIE &#x2BC6;
+          {{this.columnTitles[4]}} &#x2BC6;
           </th>
           <th v-if="!isSorted[5]" class="th-ffp" @click="sortTable(5)" id="0">
-            LETZTE WARTUNG
+            {{this.columnTitles[5]}}
           </th>
           <th
             v-if="isSorted[5] && this.dir === 'asc'"
@@ -109,7 +108,7 @@
             @click="sortTable(5)"
             id="0"
           >
-            LETZTE WARTUNG &#x2BC5;
+          {{this.columnTitles[5]}} &#x2BC5;
           </th>
           <th
             v-if="isSorted[5] && this.dir === 'desc'"
@@ -117,10 +116,10 @@
             @click="sortTable(5)"
             id="0"
           >
-            LETZTE WARTUNG &#x2BC6;
+          {{this.columnTitles[5]}} &#x2BC6;
           </th>
           <th v-if="!isSorted[6]" class="th-ffp" @click="sortTable(6)" id="0">
-            NÄCHSTE WARTUNG
+            {{this.columnTitles[6]}}
           </th>
           <th
             v-if="isSorted[6] && this.dir === 'asc'"
@@ -128,7 +127,7 @@
             @click="sortTable(6)"
             id="0"
           >
-            NÄCHSTE WARTUNG &#x2BC5;
+          {{this.columnTitles[6]}} &#x2BC5;
           </th>
           <th
             v-if="isSorted[6] && this.dir === 'desc'"
@@ -136,7 +135,7 @@
             @click="sortTable(6)"
             id="0"
           >
-            NÄCHSTE WARTUNG &#x2BC6;
+          {{this.columnTitles[6]}} &#x2BC6;
           </th>
           <th class="th-ffp"></th>
           <th class="th-ffp"></th>
@@ -157,61 +156,58 @@
           </th>
         </tr>
 
-        <!-- FILTER -->
         <transition name="fade" mode="out-in">
           <tr v-show="this.showFilterBar">
-            <th v-for="filter in this.filters" :key="filter.id" class="th-ffp">
+            <th v-for="filter in filters" :key="filter.id" class="th-ffp">
               <input v-bind="filter" @keyup="filterTable" />
             </th>
           </tr>
         </transition>
-        <!-- Filter werden mit function showFilter erzeugt -->
-        <!-- END FILTER -->
       </thead>
       <tbody>
         <tr
-          v-for="equipment in equipments"
-          :key="equipment.equipmentId"
+          v-for="item in tableData"
+          :key="item[0]"
           @change-component="changeComponent(componentName)"
         >
           <td
-            @click="changeComponent('EquipmentDetail', equipment.equipmentId)"
+            @click="changeComponent('EquipmentDetail', item[0])"
           >
-            {{ equipment.equipmentId }}
+            {{ item[0] }}
           </td>
           <td
-            @click="changeComponent('EquipmentDetail', equipment.equipmentId)"
+            @click="changeComponent('EquipmentDetail', item[0])"
           >
-            {{ equipment.equipmentName }}
+            {{ item[1] }}
           </td>
           <td
-            @click="changeComponent('EquipmentDetail', equipment.equipmentId)"
+            @click="changeComponent('EquipmentDetail', item[0])"
           >
-            {{ equipment.manufacturer }}
+            {{ item[2] }}
           </td>
           <td
-            @click="changeComponent('EquipmentDetail', equipment.equipmentId)"
+            @click="changeComponent('EquipmentDetail', item[0])"
           >
-            {{ equipment.type }}
+            {{ item[3] }}
           </td>
           <td
-            @click="changeComponent('EquipmentDetail', equipment.equipmentId)"
+            @click="changeComponent('EquipmentDetail', item[0])"
           >
-            {{ equipment.equipmentCategory }}
+            {{ item[4] }}
           </td>
           <td
-            @click="changeComponent('EquipmentDetail', equipment.equipmentId)"
+            @click="changeComponent('EquipmentDetail', item[0])"
           >
-            {{ equipment.equipmentCategory }}
+            {{ item[5] }}
           </td>
           <td
-            @click="changeComponent('EquipmentDetail', equipment.equipmentId)"
+            @click="changeComponent('EquipmentDetail', item[0])"
           >
-            {{ equipment.equipmentImage }}
+            {{ item[6] }}
           </td>
           <td
             class="text-center"
-            @click="changeComponent('EquipmentDetail', equipment.equipmentId)"
+            @click="changeComponent('EquipmentDetail', item[0])"
           >
             <i
               class="fa-solid fa-circle-info table-icon"
@@ -221,13 +217,17 @@
           </td>
           <td
             class="text-center"
-            @click="doSomething('EquipmentDetail', equipment.equipmentId)"
+            @click="doSomething('EquipmentDetail', item[0])"
           >
-            <i class="fa-solid fa-pencil table-icon" title="bearbeiten" type="button"></i>
+            <i
+              class="fa-solid fa-pencil table-icon"
+              title="bearbeiten"
+              type="button"
+            ></i>
           </td>
           <td
             class="text-center"
-            @click="doSomething('EquipmentDetail', equipment.equipmentId)"
+            @click="doSomething('EquipmentDetail', item[0])"
           >
             <i
               class="fa-solid fa-arrow-right-from-bracket table-icon"
@@ -237,7 +237,7 @@
           </td>
           <td
             class="text-center"
-            @click="doSomething('EquipmentDetail', equipment.equipmentId)"
+            @click="doSomething('EquipmentDetail', item[0])"
           >
             <i
               class="fa-regular fa-trash-can table-icon"
@@ -248,191 +248,64 @@
         </tr>
       </tbody>
     </table>
-    <FloatingActionButton
-      :fabMenus="fabFunctions"
-      @emitUserInput="fabListener"
-    ></FloatingActionButton>
-    <div class="col-2">
-      <div class="d-grid"></div>
-      <!-- <div class="d-grid mt-2">
-          <button class="btn btn-ffp" @click="changeComponent('EquipmentNew')">
-            Neu
-          </button>
-        </div> -->
-    </div>
+   
   </div>
 </template>
 
 <script>
 import store from "@store/index.js";
-import FloatingActionButton from "@components/Tools/FloatingActionButton.vue";
+
 
 export default {
-  name: "EquipmentTable",
+  name: "FlexTable",
   components: {
-    FloatingActionButton,
+
   },
 
   data() {
+    /* DATA __REQUIRED__ FOR FLEX-TABLE:
+      + Page-Title (optional)
+      + Column-Titles (required! to be flexible in Column-Names)
+      + Column-Data (required! computed property in parent)
+      + DefaultFilters (required! to define FilterBar)
+      + ActionsArray (required! Icons, Actions)
+    */
     return {
-      equipments: store.getters.equipments,
       isSorted: [false, false, false, false, false, false, false],
       dir: "",
       showFilterBar: false,
+      
+      /*
+      "filters" is an array, used to locally save changes in filter-inputs.
+      those changes cannot be stored in a prop, so they are stored in this variable, see onMounted-Function: on mount, the data is transferred!
+      vue does not allow to change data in childs. in this case this never will cause any problems because "filters" are always resetted to "default" when reloading the component. though, the data is only changed temporarily and should never be saved to the store. this is why i decided to do it this way!
+      */
+      filters: [],
       filtersActive: false,
-      filters: [
-        {
-          id: "filterId",
-          name: "ID",
-          type: "number",
-          placeholder: "ID...",
-          class: "filter-input",
-          filter: "",
-          col: 0,
-          //Attribute size not working on type "number"
-          //size wird über css gesteuert (input-filter[type])
-        },
-        {
-          id: "filterEquipmentName",
-          name: "BEZEICHNUNG",
-          type: "text",
-          placeholder: "Bezeichnung...",
-          size: 15,
-          filter: "",
-          col: 1,
-        },
-        {
-          id: "filterManufacturer",
-          name: "HERSTELLER",
-          type: "text",
-          placeholder: "Hersteller...",
-          size: 15,
-          filter: "",
-          col: 2,
-        },
-        {
-          id: "filterType",
-          name: "TYPE",
-          type: "text",
-          placeholder: "Type...",
-          size: 5,
-          filter: "",
-          col: 3,
-        },
-        {
-          id: "filterEquipmentCategory",
-          name: "KATEGORIE",
-          type: "text",
-          placeholder: "Kategorie...",
-          size: 15,
-          filter: "",
-          col: 4,
-        },
-        {
-          id: "filterLastMaintenance",
-          name: "LETZTE WARTUNG",
-          type: "text",
-          placeholder: "Letzte Wartung...",
-          size: 15,
-          filter: "",
-          col: 5,
-        },
-        {
-          id: "filterNextMaintenance",
-          name: "NÄCHSTE WARTUNG",
-          type: "text",
-          placeholder: "Nächste Wartung...",
-          size: 15,
-          filter: "",
-          col: 6,
-        },
-        {
-          id: "",
-          name: "",
-          type: "",
-          placeholder: "",
-          size: 1,
-          filter: "",
-          col: 7,
-          style: "display:none",
-        },
-        {
-          id: "",
-          name: "",
-          type: "",
-          placeholder: "",
-          size: 1,
-          filter: "",
-          col: 8,
-          style: "display:none",
-        },
-        {
-          id: "",
-          name: "",
-          type: "",
-          placeholder: "",
-          size: 1,
-          filter: "",
-          col: 9,
-          style: "display:none",
-        },
-        {
-          id: "",
-          name: "",
-          type: "",
-          placeholder: "",
-          size: 1,
-          filter: "",
-          col: 10,
-          style: "display:none",
-        },
-      ],
-      fabFunctions: [
-        {
-          id: "mainfab",
-          icon: "fa-solid fa-plus",
-          activeIcon: "fa-solid fa-circle-plus",
-          action: "changeComponent",
-          componentName: "EquipmentNew",
-          itemId: 0,
-        },
-        /* {
-          id: "subfab1",
-          colors: "sub-petrol",
-          icon: "fa-regular fa-circle-pause",
-          action: "edit",
-          componentName: "EquipmentNew",
-      },
-      {
-          id: "subfab2",
-          colors: "sub-petrol",
-          icon: "fa-solid fa-thumbtack",
-          action: "edit",
-          componentName: "EquipmentNew",
-      },
-      {
-          id: "subfab3",
-          colors: "sub-lightgrey",
-          icon: "fa-regular fa-calendar",
-          action: "edit",
-          componentName: "EquipmentNew",
-      },
-      {
-          id: "subfab4",
-          colors: "sub-petrol",
-          icon: "fa-regular fa-heart",
-          action: "edit",
-          componentName: "EquipmentNew",
-      },
-      {
-          id: "subfab5",
-          colors: "sub-yellow",
-          icon: "fa-solid fa-heart-pulse",
-          action: "edit",
-          componentName: "EquipmentNew",
-      }, */
-      ],
     };
+  },
+
+  props: {
+    title: {
+      type: String,
+      required: true,
+    },
+    columnTitles: {
+      type: Array,
+      required: true,
+    },
+    /*defaultFilters:
+    filters are sent as prop by parent;
+    default-value is "" (empty, which means "no filter")
+    */
+    defaultFilters: {
+      type: Array,
+      required: true,
+    },
+    tableData: {
+      type: Array,
+      required: true,
+    }
   },
 
   computed: {
@@ -490,13 +363,6 @@ export default {
       console.log("Do something");
     },
 
-    fabListener(payload) {
-      switch (payload.action) {
-        case "changeComponent":
-          this.$emit(payload.action, { componentName: payload.componentName });
-          break;
-      }
-    },
 
     filterTable(event) {
       //TUTORIAL: https://www.w3schools.com/howto/howto_js_filter_table.asp
@@ -623,19 +489,19 @@ export default {
       }
     },
   },
-  created() {
-
-  },
+  created() {},
 
   mounted() {
     this.sortTable(0);
     this.sortTable(0);
+    for (let i = 0; i < this.defaultFilters.length; i++) {
+      this.filters[i] = this.defaultFilters[i];
+    }
   },
 
   unmounted() {},
 
-  updated() {
-  },
+  updated() {},
 };
 </script>
 

@@ -390,12 +390,12 @@ export default {
     showFeedback() {
       this.message = true;
       setTimeout(() => {
-        this.$emit("change-component", {componentName: "EquipmentTable"});
+        this.$emit("change-component", {componentName: "FlexTable"});
         this.message = false;
       }, 2000);
     },
     cancelNewEquipment(){
-      this.$emit("change-component", {componentName: "EquipmentTable"});
+      this.$emit("change-component", {componentName: "FlexTable"});
     },
   },
 };

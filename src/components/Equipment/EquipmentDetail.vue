@@ -96,7 +96,7 @@
         <div class="d-grid">
           <button
             class="btn btn-cancel"
-            @click="fabListener({action: 'changeComponent', componentName: 'EquipmentTable'})"
+            @click="fabListener({action: 'changeComponent', componentName: 'FlexTable'})"
           >
             Zurück
           </button>

@@ -222,7 +222,7 @@ export default {
           this.equipments[i].type,
           this.equipments[i].equipmentCategory,
           this.equipments[i].purchaseDate,
-          this.equipments[i].purchasePrice,
+          this.equipments[i].type,
           ]
         data.push(item);
       }

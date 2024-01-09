@@ -70,14 +70,14 @@
                 <div class="col-6">
                   <label class="detail-label">RECHNUNG</label>
                   <p v-if="item.invoice !== ''">
-                    {{ item.invoice }}
+                    <a :href="this.getInvoice" target="_blank">Download</a>
                   </p>
                   <p v-else>Keine Daten vorhanden!</p>
                 </div>
                 <div class="col-6">
                   <label class="detail-label">BESCHREIBUNG</label>
                   <p v-if="item.manual !== ''">
-                    {{ item.manual }}
+                    <a :href="this.getManual" target="_blank">Download</a>
                   </p>
                   <p v-else>Keine Daten vorhanden!</p>
                 </div>
@@ -96,7 +96,12 @@
         <div class="d-grid">
           <button
             class="btn btn-cancel"
-            @click="fabListener({action: 'changeComponent', componentName: 'FlexTable'})"
+            @click="
+              fabListener({
+                action: 'changeComponent',
+                componentName: 'FlexTable',
+              })
+            "
           >
             Zurück
           </button>
@@ -126,6 +131,8 @@ export default {
     return {
       equipments: store.getters.equipments,
       imgagePath: "",
+      invoicePath: "",
+      manualPath: "",
       placeholder:
         "https://fakeimg.pl/600x400/1a1a1a/ebebeb?text=Kein+Bild+vorhanden",
       showReview: false,
@@ -204,10 +211,18 @@ export default {
 
     getImg() {
       if (this.imagePath != "") {
-        return store.getters.imgUrl;
+        return store.getters.imageUrl;
       } else {
         return this.placeholder;
       }
+    },
+    getInvoice() {
+      let invoice = store.getters.invoiceUrl;
+      return invoice;
+    },
+    getManual() {
+      let manual = store.getters.manualUrl;
+      return manual;
     },
   },
 
@@ -218,10 +233,13 @@ export default {
     fabListener(payload) {
       switch (payload.action) {
         case "changeComponent":
-          this.$emit(payload.action, {componentName: payload.componentName});
+          this.$emit(payload.action, { componentName: payload.componentName });
           break;
         case "captureReview":
-          this.$emit("changeComponent", {componentName: payload.componentName, id: Number(payload.id)});
+          this.$emit("changeComponent", {
+            componentName: payload.componentName,
+            id: Number(payload.id),
+          });
           break;
       }
     },
@@ -231,10 +249,33 @@ export default {
     for (let i = 0; i < this.equipments.length; i++) {
       if (this.equipments[i].equipmentId === this.itemId) {
         this.imagePath = this.equipments[i].equipmentImage;
+        this.invoicePath = this.equipments[i].invoice;
+        this.manualPath = this.equipments[i].manual;
       }
     }
+
+    if (this.invoicePath != "") {
+      let payload = {
+        path: this.invoicePath,
+        type: "invoice",
+      };
+      this.$store.dispatch("fileDownload", payload);
+    }
+
+    if (this.manualPath != "") {
+      let payload = {
+        path: this.manualPath,
+        type: "manual",
+      };
+      this.$store.dispatch("fileDownload", payload);
+    }
+
     if (this.imagePath != "") {
-      this.$store.dispatch("fileDownload", this.imagePath);
+      let payload = {
+        path: this.imagePath,
+        type: "image",
+      };
+      this.$store.dispatch("fileDownload", payload);
     }
   },
 

@@ -17,13 +17,17 @@ const firestore = getFirestore(firebase);
 const state = {
   newId: 0,
   equipments: [],
-  imgUrl: "",
+  imageUrl: "",
+  invoiceUrl: "",
+  manualUrl: "",
 };
 
 const getters = {
   newId: (state) => state.newId,
   equipments: (state) => state.equipments,
-  imgUrl: (state) => state.imgUrl,
+  imageUrl: (state) => state.imageUrl,
+  invoiceUrl: (state) => state.invoiceUrl,
+  manualUrl: (state) => state.manualUrl,
 };
 
 const mutations = {
@@ -47,10 +51,20 @@ const mutations = {
     state.members.push(payload);
   },
 
-  
-
-  setImgUrl(state, payload) {
-    state.imgUrl = payload;
+  setFileUrl(state, payload) {
+    switch (payload.type) {
+      case "image":
+        state.imageUrl = payload.url;
+        break;
+      case "invoice":
+        state.invoiceUrl = payload.url;
+        break;
+      case "manual":
+        state.manualUrl = payload.url;
+        break;
+      default: 
+      break;
+    }
   },
 };
 
@@ -130,7 +144,7 @@ const actions = {
   },
 
   updateImgUrl(context, payload) {
-    context.commit("setImgUrl", payload);
+    context.commit("setFileUrl", payload);
   },
 
   compressImage(context, fileObject) {
@@ -155,7 +169,6 @@ const actions = {
     uploadBytes(storageRef, payload.file)
       .then((snapshot) => {
         console.log(snapshot);
-        console.log("FileUpload done.");
       })
       .catch((error) => {
         console.log(error);
@@ -163,10 +176,14 @@ const actions = {
   },
 
   fileDownload(context, payload) {
-    if (payload.imgUrl !== "") {
-      getDownloadURL(ref(storage, payload))
+    if (payload.path !== "") {
+      getDownloadURL(ref(storage, payload.path))
         .then((response) => {
-          context.commit("setImgUrl", response);
+          let urlObj = {
+            type: payload.type,
+            url: response,
+          }
+          context.commit("setFileUrl", urlObj);
         })
         .catch((error) => {
           console.log("ERROR: " + error);

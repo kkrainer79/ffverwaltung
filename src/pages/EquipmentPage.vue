@@ -34,7 +34,7 @@ export default {
       itemId: 0,
       /* ---START---
       Data for Equipment-Table using FlexTable-Component*/
-      tableTitle: "EQUIPMENT-ÜBERSICHT",
+      tableTitle: "EQUIPMENT",
       columnTitles: [
         "ID",
         "BEZEICHNUNG",

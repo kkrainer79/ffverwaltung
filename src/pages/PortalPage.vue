@@ -42,11 +42,12 @@ export default {
       this.componentName = payload.componentName;
     },
   },
-  async created() {
-    this.$store.dispatch("getEquipmentId");
-    await this.$store.dispatch("getCollection");
-  },
+  async mounted() {
+      await this.$store.dispatch("getEquipmentId");
+      await this.$store.dispatch("getData");
+    },
 };
+
 </script>
 
 <style scoped></style>

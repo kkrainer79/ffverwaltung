@@ -7,29 +7,34 @@
       @submit="submitData"
       :validation-schema="schema"
       v-slot="{ errors }"
+      :key="this.equipmentCategory"
     >
       <div class="row">
         <div class="col-lg-3 col-sm-6 col-xs-12">
-          <label for="equipmentName">Bezeichnung</label>
+          <label for="equipmentName">Bezeichnung*</label>
           <Field
             as="input"
             name="equipmentName"
             type="text"
             class="form-control"
             id="equipmentName"
+            :value="this.newEquipment.equipmentName"
+            @change="saveInputData"
           />
           <small class="text-danger" v-if="errors.equipmentName">{{
             errors.equipmentName
           }}</small>
         </div>
         <div class="col-lg-3 col-sm-6 col-xs-12">
-          <label for="manufacturer">Hersteller/Marke</label>
+          <label for="manufacturer">Hersteller/Marke*</label>
           <Field
             as="input"
             name="manufacturer"
             type="text"
             class="form-control"
             id="manufacturer"
+            :value="this.newEquipment.manufacturer"
+            @change="saveInputData"
           />
           <!-- <small class="text-danger" v-if="errors.email">{{
               errors.email
@@ -45,30 +50,31 @@
             type="text"
             class="form-control"
             id="type"
+            :value="this.newEquipment.type"
+            @change="saveInputData"
           />
           <!-- <small class="text-danger" v-if="errors.email">{{
               errors.email
             }}</small> -->
         </div>
         <div class="col-lg-3 col-sm-6 col-xs-12">
-          <label for="equipmentCategory">Kategorie</label>
+          <label for="equipmentCategory">Kategorie*</label>
           <Field
             as="select"
             name="equipmentCategory"
             class="form-control"
             id="equipmentCategory"
+            :value="this.newEquipment.equipmentCategory"
+            @change="getCategory"
           >
-            <option value="manEquipment" name="1">Mann-Ausrüstung</option>
-            <option value="vehicleEquipment" name="2">
-              Fahrzeug-Ausrüstung
-            </option>
-            <option value="departmentEquipment" name="2">
-              Rüsthaus-Ausrüstung
-            </option>
-            <option value="otherEquipment" name="2">sonstige Ausrüstung</option>
-            <!-- <small class="text-danger" v-if="errors.email">{{
-              errors.email
-            }}</small> -->
+            <option value="" disabled>Bitte wählen</option>
+            <option value="RFA" name="RFA">RFA</option>
+            <option value="TLF" name="TLF">TLF</option>
+            <option value="MTF" name="MTF">MTF</option>
+            <option value="DRO" name="Drohne">Drohne</option>
+            <option value="WSD" name="Wasserdienst">Wasserdienst</option>
+            <option value="FWH" name="Feuerwehrhaus">Feuerwehrhaus</option>
+            <option value="SON" name="Sonstige">Sonstige</option>
           </Field>
         </div>
       </div>
@@ -82,17 +88,22 @@
             type="text"
             class="form-control"
             id="dealer"
+            placeholder="Firma"
+            :value="this.newEquipment.dealer"
+            @change="saveInputData"
           />
-          
         </div>
         <div class="col-lg-3 col-sm-6 col-xs-12">
-          <label for="dealerName">Händler-Kontakt (Name, Telefon etc.)</label>
+          <label for="dealerName">Händler-Kontakt</label>
           <Field
             as="input"
             name="dealerName"
             type="text"
             class="form-control"
             id="dealerName"
+            placeholder="Name, Telefon etc."
+            :value="this.newEquipment.dealerName"
+            @change="saveInputData"
           />
           <!-- <small class="text-danger" v-if="errors.email">{{
               errors.email
@@ -102,13 +113,15 @@
 
       <div class="row mt-3">
         <div class="col-lg-2 col-md-3">
-          <label for="purchaseDate">Kaufdatum</label>
+          <label for="purchaseDate">Einführungsdatum*</label>
           <Field
             as="input"
             name="purchaseDate"
             type="date"
             class="form-control"
             id="purchaseDate"
+            :value="this.newEquipment.purchaseDate"
+            @change="saveInputData"
           />
           <small class="text-danger" v-if="errors.purchaseDate">{{
             errors.purchaseDate
@@ -122,6 +135,8 @@
             type="number"
             class="form-control"
             id="purchasePrice"
+            :value="this.newEquipment.purchasePrice"
+            @change="saveInputData"
           />
           <small class="text-danger" v-if="errors.purchasePrice">{{
             errors.purchasePrice
@@ -136,6 +151,9 @@
             type="number"
             class="form-control"
             id="serviceLife"
+            placeholder="Jahre"
+            :value="this.newEquipment.serviceLife"
+            @change="saveInputData"
           />
           <small class="text-danger" v-if="errors.serviceLife">{{
             errors.serviceLife
@@ -148,11 +166,14 @@
             name="maintenanceInterval"
             class="form-control"
             id="maintenanceInterval"
+            :value="this.newEquipment.maintenanceInterval"
+            @change="saveInputData"
           >
+            <option value="" disabled>Bitte wählen</option>
             <option value="1">monatlich</option>
             <option value="3">vierteljährlich</option>
             <option value="6">halbjährlich</option>
-            <option value="6">jährlich</option>
+            <option value="12">jährlich</option>
           </Field>
           <!-- <small class="text-danger" v-if="errors.email">{{
               errors.email
@@ -204,27 +225,43 @@
               errors.email
             }}</small> -->
         </div>
-        <div class="col-lg-3 col-sm-6 col-xs-12">
-          <label for="equipmentId">automatisch generierte Equipment-ID</label>
+        <div class="col-lg-2 col-sm-4 col-xs-8">
+          <label for="equipmentLabel">Label</label>
+          <Field
+            as="input"
+            name="label"
+            type="text"
+            class="form-control"
+            id="label"
+            :value="label"
+            readonly
+          >
+          </Field>
+        </div>
+        <div class="col-lg-1 col-sm-2 col-xs-4">
+          <label for="equipmentId">ID</label>
           <Field
             as="input"
             name="equipmentId"
             type="text"
             class="form-control"
             id="equipmentId"
-            :value="newId"
+            :value="this.id"
             readonly
           >
           </Field>
-          <!-- <small class="text-danger" v-if="errors.email">{{
-              errors.email
-            }}</small> -->
         </div>
       </div>
       <div class="row mt-5">
         <div class="form-group col-lg-2">
           <div class="d-grid">
-            <button v-if="!message" class="btn btn-cancel"  @click="cancelNewEquipment">Abbrechen</button>
+            <button
+              v-if="!message"
+              class="btn btn-cancel"
+              @click="cancelNewEquipment"
+            >
+              Abbrechen
+            </button>
           </div>
         </div>
         <div class="form-group col-lg-2 offset-2">
@@ -254,18 +291,21 @@ export default {
   name: "EquipmentNew",
   data() {
     const schema = yup.object().shape({
-      equipmentName: yup
-        .string()
-        .required("Equipment-Bezeichnung ist ein Pflichtfeld")
-        .trim(),
-      manufacturer: yup.string().trim(),
+      equipmentName: yup.string().required("Das ist ein Pflichtfeld!").trim(),
+      manufacturer: yup.string().required("Das ist ein Pflichtfeld!").trim(),
       type: yup.string().trim(),
-      purchaseDate: yup.date("Bitte korrektes Datum eingeben!"),
+      equipmentCategory: yup.string().required("Das ist ein Pflichtfeld!"),
+      purchaseDate: yup
+        .date("Bitte korrektes Datum eingeben!")
+        .required("Das ist ein Pflichtfeld!"),
       purchasePrice: yup.number("Muss eine Zahl sein!"),
       serviceLife: yup.number("Muss eine Zahl sein!"),
     });
 
     return {
+      id: store.getters.newId,
+      newEquipment: {},
+      equipmentCategory: "XXX",
       schema,
       isLoading: false,
       fileType: "",
@@ -273,18 +313,28 @@ export default {
     };
   },
 
-  computed: {
-    newId() {
-      return store.getters.newId;
-    },
-  },
-
   components: {
     Form,
     Field,
   },
 
+  computed: {
+    label() {
+      let label = `${this.equipmentCategory}-${this.id}`;
+      return label;
+    },
+  },
+
   methods: {
+    saveInputData(event) {
+      this.newEquipment[event.target.id] = event.target._value;
+    },
+
+    getCategory(event) {
+      this.equipmentCategory = event.target._value;
+      this.saveInputData(event);
+    },
+
     async submitData(values) {
       this.isLoading = true;
       let imagePath = "";
@@ -349,6 +399,7 @@ export default {
         status: "",
         dealer: values.dealer,
         dealerName: values.dealerName,
+        label: values.label,
       };
 
       for (let key in dataObject) {
@@ -363,7 +414,7 @@ export default {
       };
 
       await this.$store
-        .dispatch("dataUpload", payload)
+        .dispatch("addData", payload)
         .then(() => {
           this.$store.dispatch(
             "updateEquipmentId",
@@ -390,12 +441,12 @@ export default {
     showFeedback() {
       this.message = true;
       setTimeout(() => {
-        this.$emit("change-component", {componentName: "FlexTable"});
+        this.$emit("change-component", { componentName: "FlexTable" });
         this.message = false;
       }, 2000);
     },
-    cancelNewEquipment(){
-      this.$emit("change-component", {componentName: "FlexTable"});
+    cancelNewEquipment() {
+      this.$emit("change-component", { componentName: "FlexTable" });
     },
   },
 };

@@ -3,7 +3,7 @@
     <h4>EQUIPMENT-DETAILANSICHT</h4>
     <div class="card">
       <div class="card-header">
-        <span>ID: {{ item.equipmentId }}</span>
+        <span>{{ item.label }}</span>
         <h1>{{ item.equipmentName }}</h1>
       </div>
       <div class="container">
@@ -11,7 +11,7 @@
           <div class="row">
             <div class="col-6">
               <div class="row">
-                <label class="detail-label">TYPE</label>
+                <label class="detail-label">HERSTELLER/TYPE</label>
                 <div v-if="item.manufacturer !== ''" class="col-6">
                   {{ item.manufacturer }} {{ item.type }}
                 </div>
@@ -36,7 +36,7 @@
               </div>
               <div class="row">
                 <div class="col-6">
-                  <label class="detail-label">KAUFDATUM</label>
+                  <label class="detail-label">EINFÜHRUNGSDATUM</label>
                   <p v-if="item.purchaseDate !== ''">
                     {{ item.purchaseDate }}
                   </p>

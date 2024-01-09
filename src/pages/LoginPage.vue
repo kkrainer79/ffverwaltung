@@ -63,8 +63,17 @@
           </div>
           <div class="form-row">
             <div class="form-group col-2 offset-5 mt-2">
-              <input type="checkbox" class="mr-2" :checked="stayLoggedIn" @change="setAutoLogin"/>
-              <a @click="setAutoLogin"><label type="button" class="input-label">eingeloggt bleiben</label></a>
+              <input
+                type="checkbox"
+                class="mr-2"
+                :checked="stayLoggedIn"
+                @change="setAutoLogin"
+              />
+              <a @click="setAutoLogin"
+                ><label type="button" class="input-label"
+                  >eingeloggt bleiben</label
+                ></a
+              >
             </div>
           </div>
           <div class="form-row mt-3">
@@ -82,7 +91,7 @@
           </div>
         </Form>
         <div class="copyright col-10 offset-1">
-          <small>&copy; LM d.V. Klaus Krainer, MSC | FF Preding</small>
+          <small>&copy; LM d.V. Klaus Krainer, MSc | FF Preding</small>
         </div>
       </div>
     </div>
@@ -143,10 +152,10 @@ export default {
   },
   methods: {
     setAutoLogin() {
-        this.stayLoggedIn = !this.stayLoggedIn;
+      this.stayLoggedIn = !this.stayLoggedIn;
     },
 
-    submitData(values) {
+    async submitData(values) {
       this.isLoading = true;
       this.error = "";
       this.$store
@@ -156,6 +165,9 @@ export default {
           stayLoggedIn: this.stayLoggedIn,
         })
         .then(() => {
+          this.loadData();
+        })
+        .then(() => { 
           this.$router.push({ name: "portalPage" });
           this.isLoading = false;
         })
@@ -164,6 +176,10 @@ export default {
           this.error = error;
           this.isLoading = false;
         });
+    },
+    async loadData() {
+      await this.$store.dispatch("getEquipmentId");
+      await this.$store.dispatch("getData");
     },
   },
 };

@@ -6,7 +6,14 @@
       appear
       @changeComponent="changeComponent"
     >
-      <component :is="componentName" :itemId="this.itemId" :title="this.tableTitle" :columnTitles="this.columnTitles" :defaultFilters="this.filters" :tableData="this.setTableData"></component>
+      <component
+        :is="componentName"
+        :itemId="this.itemId"
+        :title="this.tableTitle"
+        :columnTitles="this.columnTitles"
+        :defaultFilters="this.filters"
+        :tableData="this.setTableData"
+      ></component>
     </transition>
     <FloatingActionButton
       :fabMenus="fabFunctions"
@@ -23,7 +30,6 @@ import EquipmentReview from "@components/Equipment/EquipmentReview.vue";
 import FloatingActionButton from "@components/Tools/FloatingActionButton.vue";
 import store from "@store/index.js";
 
-
 export default {
   name: "EquipmentPage",
   data() {
@@ -32,6 +38,7 @@ export default {
       showForm: false,
       componentName: "FlexTable",
       itemId: 0,
+
       /* ---START---
       Data for Equipment-Table using FlexTable-Component*/
       tableTitle: "EQUIPMENT",
@@ -151,6 +158,8 @@ export default {
           style: "display:none",
         },
       ],
+      /* ---END--- */
+
       fabFunctions: [
         {
           id: "mainfab",
@@ -216,18 +225,76 @@ export default {
       let data = [];
       for (let i = 0; i < this.equipments.length; i++) {
         let item = [
-          this.equipments[i].equipmentId,
-          this.equipments[i].equipmentName,
-          this.equipments[i].manufacturer,
-          this.equipments[i].type,
-          this.equipments[i].equipmentCategory,
-          this.equipments[i].purchaseDate,
-          this.equipments[i].type,
-          ]
+          /* DATA COLUMNS */
+          {
+            data: this.equipments[i].equipmentId,
+            action: "changeComponent",
+            componentName: "EquipmentDetail",
+          },
+          {
+            data: this.equipments[i].equipmentName,
+            action: "changeComponent",
+            componentName: "EquipmentDetail",
+          },
+          {
+            data: this.equipments[i].manufacturer,
+            action: "changeComponent",
+            componentName: "EquipmentDetail",
+          },
+          {
+            data: this.equipments[i].type,
+            action: "changeComponent",
+            componentName: "EquipmentDetail",
+          },
+          {
+            data: this.equipments[i].equipmentCategory,
+            action: "changeComponent",
+            componentName: "EquipmentDetail",
+          },
+          {
+            data: this.equipments[i].purchaseDate,
+            action: "changeComponent",
+            componentName: "EquipmentDetail",
+          },
+          {
+            data: this.equipments[i].serviceLife,
+            action: "changeComponent",
+            componentName: "EquipmentDetail",
+          },
+          /* ICONS */
+          {
+            class: "fa-solid fa-circle-info table-icon",
+            title: "Details",
+            type: "button",
+            action: "changeComponent",
+            componentName: "EquipmentDetail",
+          },
+          {
+            class: "fa-solid fa-pencil table-icon",
+            title: "bearbeiten",
+            type: "button",
+            action: "changeComponent",
+            componentName: "EquipmentDetail",
+          },
+          {
+            class: "fa-solid fa-arrow-right-from-bracket table-icon",
+            title: "ausscheiden",
+            type: "button",
+            action: "changeComponent",
+            componentName: "EquipmentDetail",
+          },
+          {
+            class: "fa-solid fa-trash-can table-icon",
+            title: "ausscheiden",
+            type: "button",
+            action: "changeComponent",
+            componentName: "EquipmentDetail",
+          },
+        ];
         data.push(item);
       }
       return data;
-    }
+    },
   },
 
   methods: {
@@ -244,9 +311,7 @@ export default {
     },
   },
 
-  created() {
-
-  },
+  created() {},
 };
 </script>
 

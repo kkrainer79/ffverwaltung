@@ -62,8 +62,8 @@ const mutations = {
       case "manual":
         state.manualUrl = payload.url;
         break;
-      default: 
-      break;
+      default:
+        break;
     }
   },
 };
@@ -81,9 +81,16 @@ const actions = {
       });
 
       /*list all collections (cases) in this switch: */
+      let equipments = [];
       switch (appData[i]) {
         case "equipment":
-          context.commit("setEquipments", data);
+          /*filter discarded (ausgeschiedene) equipment from data */
+          for (let i = 0; i < data.length; i++) {
+            if (!data[i].discarded) {
+              equipments.push(data[i]);
+            }
+          }
+          context.commit("setEquipments", equipments);
           break;
         case "members":
           context.commit("setMembers", data);
@@ -115,6 +122,8 @@ const actions = {
       });
   },
 
+ 
+
   getEquipmentId(context) {
     //gets next unused equipmentId from database
     const docRef = doc(firestore, "configData", "ZocUScAesXH8ijJPqfTu");
@@ -142,6 +151,14 @@ const actions = {
         console.log(error);
       });
   },
+
+  /* updateDoc(context, payload){
+    //updates docs in firestore-collections
+    console.log(payload);
+    //const docRef = doc(firestore, payload.collection, payload.docId);
+    context.commit("updateDoc", payload);
+
+  }, */
 
   updateImgUrl(context, payload) {
     context.commit("setFileUrl", payload);
@@ -182,7 +199,7 @@ const actions = {
           let urlObj = {
             type: payload.type,
             url: response,
-          }
+          };
           context.commit("setFileUrl", urlObj);
         })
         .catch((error) => {

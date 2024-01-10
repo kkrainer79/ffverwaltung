@@ -228,7 +228,7 @@ export default {
 
   methods: {
     changeComponent(componentName) {
-      this.$emit("changeComponent", { componentName });
+      this.$emit("clickListener", { componentName });
     },
     fabListener(payload) {
       switch (payload.action) {

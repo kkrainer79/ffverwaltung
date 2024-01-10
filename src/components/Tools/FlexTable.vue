@@ -1,11 +1,13 @@
 <template>
   <div>
-    <h1>{{title}}</h1>
+    <!-- USED DATA FROM PARENT (PROP): TABLE-TITLE -->
+    <h1>{{ title }}</h1>
     <table id="dataTable" class="table table-hover table-bordered">
       <thead>
+        <!--USED DATA FROM PARENT (PROP): COLUMN TITLES  -->
         <tr id="header">
           <th v-if="!isSorted[0]" class="th-ffp" @click="sortTable(0)" id="0">
-            {{this.columnTitles[0]}}
+            {{ this.columnTitles[0] }}
           </th>
           <th
             v-if="isSorted[0] && this.dir === 'asc'"
@@ -13,7 +15,7 @@
             @click="sortTable(0)"
             id="0"
           >
-          {{this.columnTitles[0]}} &#x2BC5;
+            {{ this.columnTitles[0] }} &#x2BC5;
           </th>
           <th
             v-if="isSorted[0] && this.dir === 'desc'"
@@ -21,10 +23,10 @@
             @click="sortTable(0)"
             id="0"
           >
-          {{this.columnTitles[0]}} &#x2BC6;
+            {{ this.columnTitles[0] }} &#x2BC6;
           </th>
           <th v-if="!isSorted[1]" class="th-ffp" @click="sortTable(1)" id="0">
-            {{this.columnTitles[1]}}
+            {{ this.columnTitles[1] }}
           </th>
           <th
             v-if="isSorted[1] && this.dir === 'asc'"
@@ -32,7 +34,7 @@
             @click="sortTable(1)"
             id="0"
           >
-          {{this.columnTitles[1]}} &#x2BC5;
+            {{ this.columnTitles[1] }} &#x2BC5;
           </th>
           <th
             v-if="isSorted[1] && this.dir === 'desc'"
@@ -40,10 +42,10 @@
             @click="sortTable(1)"
             id="0"
           >
-          {{this.columnTitles[1]}} &#x2BC6;
+            {{ this.columnTitles[1] }} &#x2BC6;
           </th>
           <th v-if="!isSorted[2]" class="th-ffp" @click="sortTable(2)" id="0">
-            {{this.columnTitles[2]}}
+            {{ this.columnTitles[2] }}
           </th>
           <th
             v-if="isSorted[2] && this.dir === 'asc'"
@@ -51,7 +53,7 @@
             @click="sortTable(2)"
             id="0"
           >
-          {{this.columnTitles[2]}} &#x2BC5;
+            {{ this.columnTitles[2] }} &#x2BC5;
           </th>
           <th
             v-if="isSorted[2] && this.dir === 'desc'"
@@ -59,10 +61,10 @@
             @click="sortTable(2)"
             id="0"
           >
-          {{this.columnTitles[2]}} &#x2BC6;
+            {{ this.columnTitles[2] }} &#x2BC6;
           </th>
           <th v-if="!isSorted[3]" class="th-ffp" @click="sortTable(3)" id="0">
-            {{this.columnTitles[3]}}
+            {{ this.columnTitles[3] }}
           </th>
           <th
             v-if="isSorted[3] && this.dir === 'asc'"
@@ -70,7 +72,7 @@
             @click="sortTable(3)"
             id="0"
           >
-          {{this.columnTitles[3]}} &#x2BC5;
+            {{ this.columnTitles[3] }} &#x2BC5;
           </th>
           <th
             v-if="isSorted[3] && this.dir === 'desc'"
@@ -78,10 +80,10 @@
             @click="sortTable(3)"
             id="0"
           >
-          {{this.columnTitles[3]}} &#x2BC6;
+            {{ this.columnTitles[3] }} &#x2BC6;
           </th>
           <th v-if="!isSorted[4]" class="th-ffp" @click="sortTable(4)" id="0">
-            {{this.columnTitles[4]}}
+            {{ this.columnTitles[4] }}
           </th>
           <th
             v-if="isSorted[4] && this.dir === 'asc'"
@@ -89,7 +91,7 @@
             @click="sortTable(4)"
             id="0"
           >
-          {{this.columnTitles[4]}} &#x2BC5;
+            {{ this.columnTitles[4] }} &#x2BC5;
           </th>
           <th
             v-if="isSorted[4] && this.dir === 'desc'"
@@ -97,10 +99,10 @@
             @click="sortTable(4)"
             id="0"
           >
-          {{this.columnTitles[4]}} &#x2BC6;
+            {{ this.columnTitles[4] }} &#x2BC6;
           </th>
           <th v-if="!isSorted[5]" class="th-ffp" @click="sortTable(5)" id="0">
-            {{this.columnTitles[5]}}
+            {{ this.columnTitles[5] }}
           </th>
           <th
             v-if="isSorted[5] && this.dir === 'asc'"
@@ -108,7 +110,7 @@
             @click="sortTable(5)"
             id="0"
           >
-          {{this.columnTitles[5]}} &#x2BC5;
+            {{ this.columnTitles[5] }} &#x2BC5;
           </th>
           <th
             v-if="isSorted[5] && this.dir === 'desc'"
@@ -116,10 +118,10 @@
             @click="sortTable(5)"
             id="0"
           >
-          {{this.columnTitles[5]}} &#x2BC6;
+            {{ this.columnTitles[5] }} &#x2BC6;
           </th>
           <th v-if="!isSorted[6]" class="th-ffp" @click="sortTable(6)" id="0">
-            {{this.columnTitles[6]}}
+            {{ this.columnTitles[6] }}
           </th>
           <th
             v-if="isSorted[6] && this.dir === 'asc'"
@@ -127,7 +129,7 @@
             @click="sortTable(6)"
             id="0"
           >
-          {{this.columnTitles[6]}} &#x2BC5;
+            {{ this.columnTitles[6] }} &#x2BC5;
           </th>
           <th
             v-if="isSorted[6] && this.dir === 'desc'"
@@ -135,7 +137,7 @@
             @click="sortTable(6)"
             id="0"
           >
-          {{this.columnTitles[6]}} &#x2BC6;
+            {{ this.columnTitles[6] }} &#x2BC6;
           </th>
           <th class="th-ffp"></th>
           <th class="th-ffp"></th>
@@ -155,7 +157,7 @@
             <i class="fa-solid fa-filter" :class="filterIsActive"></i>
           </th>
         </tr>
-
+        <!-- USED DATA FROM PARENT (PROP): FILTERS -->
         <transition name="fade" mode="out-in">
           <tr v-show="this.showFilterBar">
             <th v-for="filter in filters" :key="filter.id" class="th-ffp">
@@ -164,103 +166,118 @@
           </tr>
         </transition>
       </thead>
+      <!-- USED DATA FROM PARENT (PROP): DATA-ARRAY (SET-TABLE-DATA)-->
       <tbody>
-        <tr
-          v-for="item in tableData"
-          :key="item[0]"
-          @change-component="changeComponent(componentName)"
-        >
+        <tr v-for="item in tableData" :key="item[0].data">
           <td
-            @click="changeComponent('EquipmentDetail', item[0])"
+            @click="
+              tableActions(item[0].action, item[0].componentName, item[0].data)
+            "
           >
-            {{ item[0] }}
+            {{ item[0].data }}
           </td>
           <td
-            @click="changeComponent('EquipmentDetail', item[0])"
+            @click="
+              tableActions(item[1].action, item[1].componentName, item[0].data)
+            "
           >
-            {{ item[1] }}
+            {{ item[1].data }}
           </td>
           <td
-            @click="changeComponent('EquipmentDetail', item[0])"
+            @click="
+              tableActions(item[2].action, item[2].componentName, item[0].data)
+            "
           >
-            {{ item[2] }}
+            {{ item[2].data }}
           </td>
           <td
-            @click="changeComponent('EquipmentDetail', item[0])"
+            @click="
+              tableActions(item[3].action, item[3].componentName, item[0].data)
+            "
           >
-            {{ item[3] }}
+            {{ item[3].data }}
           </td>
           <td
-            @click="changeComponent('EquipmentDetail', item[0])"
+            @click="
+              tableActions(item[4].action, item[4].componentName, item[0].data)
+            "
           >
-            {{ item[4] }}
+            {{ item[4].data }}
           </td>
           <td
-            @click="changeComponent('EquipmentDetail', item[0])"
+            @click="
+              tableActions(item[5].action, item[5].componentName, item[0].data)
+            "
           >
-            {{ item[5] }}
+            {{ item[5].data }}
           </td>
           <td
-            @click="changeComponent('EquipmentDetail', item[0])"
+            @click="
+              tableActions(item[6].action, item[6].componentName, item[0].data)
+            "
           >
-            {{ item[6] }}
+            {{ item[6].data }}
           </td>
           <td
             class="text-center"
-            @click="changeComponent('EquipmentDetail', item[0])"
+            @click="
+              tableActions(item[7].action, item[7].componentName, item[0])
+            "
           >
             <i
-              class="fa-solid fa-circle-info table-icon"
-              title="Details"
-              type="button"
+              :class="item[7].class"
+              :title="item[7].title"
+              :type="item[7].type"
             ></i>
           </td>
           <td
             class="text-center"
-            @click="doSomething('EquipmentDetail', item[0])"
+            @click="
+              tableActions(item[8].action, item[8].componentName, item[0])
+            "
           >
             <i
-              class="fa-solid fa-pencil table-icon"
-              title="bearbeiten"
-              type="button"
+              :class="item[8].class"
+              :title="item[8].title"
+              :type="item[8].type"
             ></i>
           </td>
           <td
             class="text-center"
-            @click="doSomething('EquipmentDetail', item[0])"
+            @click="
+              tableActions(item[9].action, item[9].componentName, item[0])
+            "
           >
             <i
-              class="fa-solid fa-arrow-right-from-bracket table-icon"
-              title="ausscheiden"
-              type="button"
+              :class="item[9].class"
+              :title="item[9].title"
+              :type="item[9].type"
             ></i>
           </td>
           <td
             class="text-center"
-            @click="doSomething('EquipmentDetail', item[0])"
+            @click="
+              tableActions(item[10].action, item[10].componentName, item[0])
+            "
           >
             <i
-              class="fa-regular fa-trash-can table-icon"
-              title="löschen"
-              type="button"
+              :class="item[10].class"
+              :title="item[10].title"
+              :type="item[10].type"
             ></i>
           </td>
         </tr>
       </tbody>
     </table>
-   
   </div>
 </template>
 
 <script>
 import store from "@store/index.js";
 
-
 export default {
   name: "FlexTable",
-  components: {
-
-  },
+  components: {},
 
   data() {
     /* DATA __REQUIRED__ FOR FLEX-TABLE:
@@ -268,13 +285,12 @@ export default {
       + Column-Titles (required! to be flexible in Column-Names)
       + Column-Data (required! computed property in parent)
       + DefaultFilters (required! to define FilterBar)
-      + ActionsArray (required! Icons, Actions)
     */
     return {
       isSorted: [false, false, false, false, false, false, false],
       dir: "",
       showFilterBar: false,
-      
+
       /*
       "filters" is an array, used to locally save changes in filter-inputs.
       those changes cannot be stored in a prop, so they are stored in this variable, see onMounted-Function: on mount, the data is transferred!
@@ -305,7 +321,7 @@ export default {
     tableData: {
       type: Array,
       required: true,
-    }
+    },
   },
 
   computed: {
@@ -320,6 +336,22 @@ export default {
   },
 
   methods: {
+    changeComponent(componentName, id) {
+      let payload = {
+        componentName: componentName,
+        id: id,
+      };
+      this.$emit("changeComponent", payload);
+    },
+
+    tableActions(action, componentName, id) {
+      switch (action) {
+        case "changeComponent":
+          this.changeComponent(componentName, id);
+          break;
+      }
+    },
+
     showFilter() {
       this.showFilterBar = !this.showFilterBar;
     },
@@ -349,20 +381,6 @@ export default {
         tr[i].style.display = "";
       }
     },
-
-    showDetail(id, name) {
-      this.$emit("change-component", "EquipmentDetail");
-      console.log("do something with " + id + ". FunctionName: " + name);
-    },
-
-    changeComponent(componentName, id) {
-      this.$emit("change-component", { componentName, id });
-    },
-
-    doSomething() {
-      console.log("Do something");
-    },
-
 
     filterTable(event) {
       //TUTORIAL: https://www.w3schools.com/howto/howto_js_filter_table.asp

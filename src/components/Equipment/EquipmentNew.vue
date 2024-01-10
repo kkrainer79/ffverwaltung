@@ -400,6 +400,7 @@ export default {
         dealer: values.dealer,
         dealerName: values.dealerName,
         label: values.label,
+        discarded: false,
       };
 
       for (let key in dataObject) {

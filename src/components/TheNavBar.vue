@@ -48,20 +48,20 @@ export default {
     return {
       menu: [
         {
-          name: "dashboard",
-          path: "dashboardPage",
+          name: "Dashboard",
+          path: "DashboardPage",
         },
         {
-          name: "equipment",
-          path: "equipmentPage",
+          name: "Equipment",
+          path: "EquipmentPage",
         },
         {
-          name: "atemschutz",
-          path: "atemschutzPage",
+          name: "Atemschutz",
+          path: "AtemschutzPage",
         },
         {
-          name: "bekleidung",
-          path: "bekleidungPage",
+          name: "Bekleidung",
+          path: "ClothingPage",
         },
       ],
     };
@@ -72,7 +72,7 @@ export default {
   },
 
   emits: {
-    "change-component": true,
+    "changeComponent": true,
   },
 
   computed: {},
@@ -82,14 +82,14 @@ export default {
       this.$store
         .dispatch("logOut")
         .then(() => {
-          this.$router.push({ name: "loginPage" });
+          this.$router.push({ name: "LoginPage" });
         })
         .catch((error) => {
           console.log(error);
         });
     },
     changeComponent(componentName) {
-      this.$emit("change-component", { componentName });
+      this.$router.push({name: componentName });
     },
   },
 };

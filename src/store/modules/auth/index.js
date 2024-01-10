@@ -144,17 +144,19 @@ const actions = {
     });
   },
   autoLogOut(context) {
-    EventBus.emit("notify", {
-      type: "warning",
-      title: "Event erfolgreich abgefeuert",
-      message: "Hier kommt eine Nachricht hin",
-      action: "redirect",
-      componentName: "loginPage",
-      buttonTitle: "Weiter zum Login",
-      showButton: false,
-      timeOut: false,
-    });
+    this.$router.push({ name: "LoginPage" });
     context.dispatch("logOut");
+    EventBus.emit("notify", {
+      type: "success",
+      title: "Sie wurden abgemeldet",
+      message: "Aufgrund eines Timeouts wurden Sie vom Serviceportal abgemeldet.",
+      subMessage: "Bitte melden Sie sich neu an.",
+      iconAsButton: true,
+      action: "close",
+      icon: "faIcon fa-solid fa-circle-check",
+      timeOut: false,
+      componentName: "",
+    });
   },
 };
 

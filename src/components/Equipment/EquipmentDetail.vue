@@ -1,6 +1,8 @@
 <template>
-  <div>
-    <h4>EQUIPMENT-DETAILANSICHT</h4>
+  <div class="container-flex">
+    <the-nav-bar @changeComponent="changeComponent"></the-nav-bar>
+  <div class="container">
+    <h1>EQUIPMENT-DETAILANSICHT</h1>
     <div class="card">
       <div class="card-header">
         <span>{{ item.label }}</span>
@@ -90,7 +92,6 @@
         </div>
       </div>
     </div>
-    <EquipmentReview v-if="showReview"></EquipmentReview>
     <div class="row mt-2">
       <div class="col-2 mt-5">
         <div class="d-grid">
@@ -99,7 +100,7 @@
             @click="
               fabListener({
                 action: 'changeComponent',
-                componentName: 'FlexTable',
+                componentName: 'EquipmentPage',
               })
             "
           >
@@ -113,22 +114,24 @@
       @emitUserInput="fabListener"
     ></FloatingActionButton>
   </div>
+  </div>
 </template>
 
 <script>
 import store from "@/store/index.js";
 import FloatingActionButton from "@components/Tools/FloatingActionButton.vue";
-import EquipmentReview from "@components/Equipment/EquipmentReview.vue";
+import TheNavBar from "../TheNavBar.vue";
 
 export default {
   name: "EquipmentDetail",
   components: {
     FloatingActionButton,
-    EquipmentReview,
+    TheNavBar
   },
 
   data() {
     return {
+      itemId: 0,
       equipments: store.getters.equipments,
       imgagePath: "",
       invoicePath: "",
@@ -143,7 +146,7 @@ export default {
           activeIcon: "fa-solid fa-wrench",
           action: "captureReview",
           componentName: "EquipmentReview",
-          itemId: this.itemId,
+          itemId: 0,
         },
         /* {
           id: "subfab1",
@@ -184,9 +187,9 @@ export default {
     };
   },
 
-  props: {
+/* props: {
     itemId: Number,
-  },
+  }, */
 
   computed: {
     item() {
@@ -196,12 +199,6 @@ export default {
           item = this.equipments[i];
         }
       }
-      /* console.log(item);
-      for (let [key, value] of Object.entries(item)) {
-        if (value === "") {
-          item[key] = "Keine Daten vorhanden";
-        }
-      } */
       if (item !== "") {
         return item;
       } else {
@@ -210,42 +207,44 @@ export default {
     },
 
     getImg() {
-      if (this.imagePath != "") {
+      if (this.imagePath !== "") {
         return store.getters.imageUrl;
       } else {
         return this.placeholder;
       }
     },
     getInvoice() {
+      if (this.invoicePath !=="") {
       let invoice = store.getters.invoiceUrl;
       return invoice;
+    } else 
+    return "";
     },
+
     getManual() {
+      if (this.manualPath !=="") {
       let manual = store.getters.manualUrl;
       return manual;
+    } else
+    return ""
     },
   },
 
   methods: {
-    changeComponent(componentName) {
-      this.$emit("clickListener", { componentName });
-    },
     fabListener(payload) {
       switch (payload.action) {
         case "changeComponent":
-          this.$emit(payload.action, { componentName: payload.componentName });
+          this.$router.push({name: payload.componentName });
           break;
         case "captureReview":
-          this.$emit("changeComponent", {
-            componentName: payload.componentName,
-            id: Number(payload.id),
-          });
+        this.$router.push({name: payload.componentName, params: {id: this.itemId}, props: {id: this.itemId}});
           break;
       }
     },
   },
 
-  created() {
+  mounted() {
+    this.itemId = Number(this.$route.params.id);
     for (let i = 0; i < this.equipments.length; i++) {
       if (this.equipments[i].equipmentId === this.itemId) {
         this.imagePath = this.equipments[i].equipmentImage;
@@ -254,7 +253,7 @@ export default {
       }
     }
 
-    if (this.invoicePath != "") {
+    if (this.invoicePath !== "") {
       let payload = {
         path: this.invoicePath,
         type: "invoice",
@@ -262,7 +261,7 @@ export default {
       this.$store.dispatch("fileDownload", payload);
     }
 
-    if (this.manualPath != "") {
+    if (this.manualPath !== "") {
       let payload = {
         path: this.manualPath,
         type: "manual",
@@ -270,13 +269,17 @@ export default {
       this.$store.dispatch("fileDownload", payload);
     }
 
-    if (this.imagePath != "") {
+    if (this.imagePath !== "") {
       let payload = {
         path: this.imagePath,
         type: "image",
       };
       this.$store.dispatch("fileDownload", payload);
     }
+  },
+
+  async created() {
+  
   },
 
   unmounted() {

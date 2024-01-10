@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div class="container-flex">
+    <the-nav-bar @changeComponent="changeComponent"></the-nav-bar>
+  <div class="container">
     <div>
       <h1>EQUIPMENT-WARTUNG</h1>
     </div>
@@ -88,7 +90,7 @@
       <div v-if="itemFound" class="row mt-4">
         <div class="col-3">
           <div class="d-grid">
-            <button class="btn btn-ffp" @click="changeComponent">
+            <button class="btn btn-ffp" @click="saveReview">
               Speichern
             </button>
           </div>
@@ -97,7 +99,7 @@
       <div class="row mt-3">
         <div class="col-3">
           <div class="d-grid">
-            <button class="btn btn-cancel" @click="changeComponent">
+            <button class="btn btn-cancel" @click="cancelReview">
               Abbrechen
             </button>
           </div>
@@ -105,11 +107,13 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
 import store from "@/store/index.js";
 import { Form, Field } from "vee-validate";
+import TheNavBar from "../TheNavBar.vue";
 
 /* import * as yup from "yup"; */
 
@@ -118,7 +122,7 @@ export default {
   data() {
     return {
       equipments: store.getters.equipments,
-      searchId: this.itemId,
+      searchId: 0,
       item: [],
       itemFound: false,
       timeStamp: "",
@@ -127,10 +131,11 @@ export default {
   components: {
     Form,
     Field,
+    TheNavBar,
   },
-  props: {
+  /*  props: {
     itemId: Number,
-  },
+  }, */
 
   computed: {},
   methods: {
@@ -161,11 +166,19 @@ export default {
       };
       this.timeStamp = date.toLocaleString("de-AT", options);
     },
-    changeComponent() {
-      this.$emit("changeComponent", { componentName: "EquipmentTable" });
+    saveReview() {
+      console.log("save Review: to come...")
+    },
+    cancelReview(){
+      this.$router.go(-1);
     },
   },
+  created() {
+    
+  },
+
   mounted() {
+    this.searchId = Number(this.$route.params.id);
     this.findEquipment();
   },
 };

@@ -269,9 +269,6 @@
             <button class="btn btn-ffp" v-if="!message">
               <span>Speichern</span>
             </button>
-            <button class="btn btn-ffp" v-if="message">
-              <span>Daten gespeichert!</span>
-            </button>
           </div>
           <div class="col-10 offset-1 text-danger text-center mt-2">
             <!-- <small v-if="error">{{ errorText }}</small> -->
@@ -286,6 +283,7 @@
 import { Form, Field } from "vee-validate";
 import * as yup from "yup";
 import store from "@store/index.js";
+import { EventBus } from "@/event-bus";
 
 export default {
   name: "EquipmentNew",
@@ -421,8 +419,22 @@ export default {
             "updateEquipmentId",
             Number(dataObject.equipmentId)
           );
-          this.showFeedback();
+          this.message = true;
           this.isLoading = false;
+          EventBus.emit("notify", {
+            type: "success",
+            title: "Neues Equipment gespeichert",
+            message:
+              "Die Daten wurden erfolgreich in die Datenbank geschrieben.",
+            subMessage: "Sie werden automatisch weitergeleitet.",
+            iconAsButton: true,
+            action: "redirect",
+            icon: "faIcon fa-solid fa-circle-check",
+            timeOut: true,
+            componentName: "EquipmentPage",
+          });
+          
+
         })
         .catch((error) => {
           console.log(error);
@@ -441,13 +453,9 @@ export default {
 
     showFeedback() {
       this.message = true;
-      setTimeout(() => {
-        this.$emit("change-component", { componentName: "FlexTable" });
-        this.message = false;
-      }, 2000);
     },
     cancelNewEquipment() {
-      this.$emit("change-component", { componentName: "FlexTable" });
+      this.$router.push({name: "EquipmentPage"});
     },
   },
 };

@@ -26,7 +26,6 @@
         class="mainfab-active"
         :componentName="fabComponentNames[0]"
         :action="fabActions[0]"
-        :itemId="fabItemIds[0]"
         :class="fabMenus[0].activeIcon"
         @click="emitUserInput"
       ></span>
@@ -73,24 +72,22 @@ export default {
       }
       return fabComponentNames;
     },
-    fabItemIds(){
+/*     fabItemIds(){
       let fabItemIds = [];
       for (let i = 0; i< this.fabMenus.length; i++) {
         fabItemIds.push(this.fabMenus[i].itemId);
       }
       return fabItemIds;
-    },
+    }, */
   },
 
   methods: {
     emitUserInput(event) {
       let action = event.target.attributes.action.value;
       let componentName = event.target.attributes.componentName.value;
-      let itemId = event.target.attributes.itemId.value;
       let payload = {
         action: action,
         componentName: componentName,
-        id: itemId,
       };
       this.$emit("emitUserInput", payload);
     },

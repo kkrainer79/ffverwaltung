@@ -1,28 +1,35 @@
 <template>
-  <div>
-    <transition
-      name="fade"
-      mode="out-in"
-      appear
-      @changeComponent="changeComponent"
-    >
-      <component
-        :is="componentName"
-        :itemId="this.itemId"
-        :title="this.tableTitle"
-        :columnTitles="this.columnTitles"
-        :defaultFilters="this.filters"
-        :tableData="this.setTableData"
-      ></component>
-    </transition>
-    <FloatingActionButton
-      :fabMenus="fabFunctions"
-      @emitUserInput="fabListener"
-    ></FloatingActionButton>
+  <div class="container-flex">
+    <the-nav-bar @changeComponent="changeComponent"></the-nav-bar>
+    <div class="container">
+      <transition
+        name="fade"
+        mode="out-in"
+        appear
+        @userInput="userInputHandler"
+      >
+        <component
+          :is="componentName"
+          :itemId="this.itemId"
+          :title="this.tableTitle"
+          :columnTitles="this.columnTitles"
+          :defaultFilters="this.filters"
+          :tableData="this.setTableData"
+        ></component>
+      </transition>
+      <UserNotification></UserNotification>
+      <FloatingActionButton
+        v-if="fabActive"
+        :fabMenus="fabFunctions"
+        @emitUserInput="fabListener"
+      ></FloatingActionButton>
+    </div>
   </div>
 </template>
 
 <script>
+import TheNavBar from "@/components/TheNavBar.vue";
+import UserNotification from "@/components/Tools/UserNotification.vue";
 import EquipmentNew from "@components/Equipment/EquipmentNew.vue";
 import FlexTable from "@components/Tools/FlexTable.vue";
 import EquipmentDetail from "@components/Equipment/EquipmentDetail.vue";
@@ -32,12 +39,22 @@ import store from "@store/index.js";
 
 export default {
   name: "EquipmentPage",
+  components: {
+    EquipmentNew,
+    FlexTable,
+    EquipmentDetail,
+    EquipmentReview,
+    FloatingActionButton,
+    TheNavBar,
+    UserNotification,
+  },
   data() {
     return {
       equipments: store.getters.equipments,
       showForm: false,
       componentName: "FlexTable",
       itemId: 0,
+      action: "",
 
       /* ---START---
       Data for Equipment-Table using FlexTable-Component*/
@@ -160,6 +177,8 @@ export default {
       ],
       /* ---END--- */
 
+      /*FAB-FUNCTIONS ON FLEX-TABLE-PAGE
+      CONTROLLED FROM EQUIPMENT-PAGE*/
       fabFunctions: [
         {
           id: "mainfab",
@@ -208,13 +227,7 @@ export default {
     };
   },
 
-  components: {
-    EquipmentNew,
-    FlexTable,
-    EquipmentDetail,
-    EquipmentReview,
-    FloatingActionButton,
-  },
+  
 
   computed: {
     setTableData() {
@@ -228,66 +241,66 @@ export default {
           /* DATA COLUMNS */
           {
             data: this.equipments[i].equipmentId,
-            action: "changeComponent",
+            action: "showDetail",
             componentName: "EquipmentDetail",
           },
           {
             data: this.equipments[i].equipmentName,
-            action: "changeComponent",
+            action: "showDetail",
             componentName: "EquipmentDetail",
           },
           {
             data: this.equipments[i].manufacturer,
-            action: "changeComponent",
+            action: "showDetail",
             componentName: "EquipmentDetail",
           },
           {
             data: this.equipments[i].type,
-            action: "changeComponent",
+            action: "showDetail",
             componentName: "EquipmentDetail",
           },
           {
             data: this.equipments[i].equipmentCategory,
-            action: "changeComponent",
+            action: "showDetail",
             componentName: "EquipmentDetail",
           },
           {
             data: this.equipments[i].purchaseDate,
-            action: "changeComponent",
+            action: "showDetail",
             componentName: "EquipmentDetail",
           },
           {
             data: this.equipments[i].serviceLife,
-            action: "changeComponent",
+            action: "showDetail",
             componentName: "EquipmentDetail",
           },
           /* ICONS */
           {
-            class: "fa-solid fa-circle-info table-icon",
+            class: "fa-solid fa-pencil table-icon",
             title: "Details",
             type: "button",
-            action: "changeComponent",
+            action: "showDetail",
             componentName: "EquipmentDetail",
           },
           {
-            class: "fa-solid fa-pencil table-icon",
+            class: "fa-solid fa-wrench table-icon",
             title: "bearbeiten",
             type: "button",
-            action: "changeComponent",
-            componentName: "EquipmentDetail",
+            action: "showDetail",
+            componentName: "EquipmentReview",
           },
           {
             class: "fa-solid fa-arrow-right-from-bracket table-icon",
             title: "ausscheiden",
             type: "button",
-            action: "changeComponent",
+            action: "showDetail",
             componentName: "EquipmentDetail",
           },
           {
             class: "fa-solid fa-trash-can table-icon",
             title: "ausscheiden",
             type: "button",
-            action: "changeComponent",
+            action: "showDetail",
             componentName: "EquipmentDetail",
           },
         ];
@@ -295,23 +308,30 @@ export default {
       }
       return data;
     },
+    fabActive() {
+      if (this.componentName === "FlexTable") {
+        return true;
+      } else return false;
+    },
   },
 
   methods: {
-    changeComponent(payload) {
-      this.componentName = payload.componentName;
+    userInputHandler(payload) {
       this.itemId = payload.id;
+      this.$router.push({name: payload.componentName, params: {id: this.itemId}, props: {id: this.itemId}});
+
     },
     fabListener(payload) {
       switch (payload.action) {
         case "changeComponent":
-          this.componentName = payload.componentName;
+          this.$router.push({name: payload.componentName}); 
           break;
       }
     },
   },
 
   created() {},
+  
 };
 </script>
 

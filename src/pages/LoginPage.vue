@@ -168,7 +168,7 @@ export default {
           this.loadData();
         })
         .then(() => { 
-          this.$router.push({ name: "portalPage" });
+          this.$router.push({ name: "DashboardPage" });
           this.isLoading = false;
         })
         .catch((error) => {

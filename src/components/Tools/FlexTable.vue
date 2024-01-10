@@ -221,7 +221,7 @@
           <td
             class="text-center"
             @click="
-              tableActions(item[7].action, item[7].componentName, item[0])
+              tableActions(item[7].action, item[7].componentName, item[0].data)
             "
           >
             <i
@@ -233,7 +233,7 @@
           <td
             class="text-center"
             @click="
-              tableActions(item[8].action, item[8].componentName, item[0])
+              tableActions(item[8].action, item[8].componentName, item[0].data)
             "
           >
             <i
@@ -245,7 +245,7 @@
           <td
             class="text-center"
             @click="
-              tableActions(item[9].action, item[9].componentName, item[0])
+              tableActions(item[9].action, item[9].componentName, item[0].data)
             "
           >
             <i
@@ -257,7 +257,11 @@
           <td
             class="text-center"
             @click="
-              tableActions(item[10].action, item[10].componentName, item[0])
+              tableActions(
+                item[10].action,
+                item[10].componentName,
+                item[0].data
+              )
             "
           >
             <i
@@ -336,18 +340,15 @@ export default {
   },
 
   methods: {
-    changeComponent(componentName, id) {
+    tableActions(action, componentName, id) {
       let payload = {
+        action: action,
         componentName: componentName,
         id: id,
       };
-      this.$emit("changeComponent", payload);
-    },
-
-    tableActions(action, componentName, id) {
       switch (action) {
-        case "changeComponent":
-          this.changeComponent(componentName, id);
+        case "showDetail":
+          this.$emit("userInput", payload);
           break;
       }
     },

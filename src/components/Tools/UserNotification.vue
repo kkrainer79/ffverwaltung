@@ -5,9 +5,9 @@
       v-if="type == 'warning'"
       id="userNotification"
       class="userNotification"
-      :class="notificationClasses"
+      :class="notificationClass"
     >
-      <div><i class="fa-solid fa-circle-check faIcon"></i></div>
+      <div><i class="faIcon fa-solid fa-circle-check userNotificationIconAsButton"></i></div>
       <div class="userNotificationTitle">{{ this.title }}</div>
       <button v-if="showButton" @click="runAction()">
         {{ this.buttonTitle }}
@@ -18,20 +18,30 @@
       v-else-if="type == 'success'"
       id="userNotification"
       class="userNotification"
-      :class="notificationClasses"
+      :class="notificationClass"
     >
-      <div><i class="fa-solid fa-circle-check faIcon"></i></div>
       <div class="userNotificationTitle">{{ this.title }}</div>
-      <button v-if="showButton" @click="runAction()">
-        {{ this.buttonTitle }}
-      </button>
+      <div>{{ this.message }}</div>
+      <div class="userNotificationIcon">
+        <i
+          v-if="this.iconAsButton"
+          type="button"
+          class="userNotificationIconAsButton"
+          :class="this.icon"
+          @click="runAction()"
+        ></i>
+        <i v-else :class="this.icon"></i>
+      </div>
+      <div class="userNotificationSubMessage">
+        {{ this.subMessage }}
+      </div>
     </div>
     <div
       v-show="show"
       v-else
       id="userNotification"
       class="userNotification"
-      :class="notificationClasses"
+      :class="notificationClass"
     >
       <div><i class="fa-solid fa-circle-check faIcon"></i></div>
       <div class="userNotificationTitle">{{ this.title }}</div>
@@ -52,27 +62,27 @@ export default {
       type: "",
       title: "",
       message: "",
+      subMessage: "",
       action: "",
-      showButton: false,
-      buttonTitle: "",
-      timeOut: true,
+      icon: "",
+      iconAsButton: false,
+      timeOut: false,
       componentName: "",
     };
   },
 
   computed: {
-    notificationClasses() {
+    notificationClass() {
       return {
-        "bg-green": this.type === "success",
-        "bg-orange": this.type === "warning",
-        "bg-red": this.type === "failure",
+        "userNotificationSuccess": this.type === "success",
+        "notification-warning": this.type === "warning",
+        "notification-failure": this.type === "failure",
       };
     },
   },
 
   methods: {
-    performAction() {
-    },
+    performAction() {},
     bindEvents() {
       EventBus.on(
         "notify",
@@ -86,22 +96,21 @@ export default {
       this.type = data.type;
       this.title = data.title;
       this.message = data.message;
+      this.subMessage = data.subMessage;
       this.action = data.action;
       this.show = true;
       this.timeOut = data.timeOut;
       this.componentName = data.componentName;
-      this.buttonTitle = data.buttonTitle;
+      this.icon = data.icon;
+      this.iconAsButton = data.iconAsButton;
 
 
       if (this.timeOut) {
-      setTimeout(
-        function () {
-          this.clearNotification();
-        }.bind(this),
-        3000
-      )} else {
-        this.showButton = true;
-      }
+        setTimeout(
+          this.runAction,
+          5000
+        );
+      } else this.runAction;
     },
 
     runAction() {
@@ -109,10 +118,11 @@ export default {
         case "close":
           this.clearNotification();
           break;
-          case "redirect": {
-            this.clearNotification();
-            this.$router.push( {name: this.componentName });
-          }
+        case "redirect": {
+          this.$router.push({ name: this.componentName });
+          this.clearNotification();
+          break;
+        }
       }
     },
 
@@ -139,12 +149,6 @@ export default {
 
 <style scoped></style>
 
-
-EventBus.emit("notify", {
-    type: "warning",
-    title: "Event erfolgreich abgefeuert",
-    message: "Hier kommt eine Nachricht hin",
-    action: "close",
-    showButton: false,
-    timeOut: true,
-  });
+EventBus.emit("notify", { type: "warning", title: "Event erfolgreich
+abgefeuert", message: "Hier kommt eine Nachricht hin", action: "close",
+showButton: false, timeOut: true, });

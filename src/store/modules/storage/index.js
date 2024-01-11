@@ -17,6 +17,8 @@ const firestore = getFirestore(firebase);
 const state = {
   newId: 0,
   equipments: [],
+  members: [],
+  reviews: [],
   imageUrl: "",
   invoiceUrl: "",
   manualUrl: "",
@@ -50,6 +52,9 @@ const mutations = {
   addMembers(state, payload) {
     state.members.push(payload);
   },
+  addReviews(state, payload) {
+    state.reviews.push(payload);
+  },
 
   setFileUrl(state, payload) {
     switch (payload.type) {
@@ -77,7 +82,9 @@ const actions = {
       let data = [];
       const documents = await getDocs(collection(firestore, appData[i]));
       documents.forEach((doc) => {
-        data.push(doc.data());
+        let item = doc.data();
+        item.firestoreId = doc.id;
+        data.push(item);
       });
 
       /*list all collections (cases) in this switch: */

@@ -106,7 +106,9 @@
         </div>
       </div>
     </div>
+    <UserNotification></UserNotification>
   </div>
+
   </div>
 </template>
 
@@ -114,6 +116,8 @@
 import store from "@/store/index.js";
 import { Form, Field } from "vee-validate";
 import TheNavBar from "../TheNavBar.vue";
+import UserNotification from "../Tools/UserNotification.vue";
+import { EventBus } from "@/event-bus";
 
 /* import * as yup from "yup"; */
 
@@ -122,6 +126,7 @@ export default {
   data() {
     return {
       equipments: store.getters.equipments,
+      userEmail: store.getters.userEmail,
       searchId: 0,
       item: [],
       itemFound: false,
@@ -132,6 +137,7 @@ export default {
     Form,
     Field,
     TheNavBar,
+    UserNotification,
   },
   /*  props: {
     itemId: Number,
@@ -166,8 +172,40 @@ export default {
       };
       this.timeStamp = date.toLocaleString("de-AT", options);
     },
-    saveReview() {
-      console.log("save Review: to come...")
+    async saveReview() {
+      let path = `equipment/${this.item[0].firestoreId}/reviews`;
+      let review = document.getElementById("review").value;
+      let dataObj = {
+        user: this.userEmail,
+        time: this.timeStamp,
+        review: review,
+      };
+      const payload = {
+        collection: path,
+        data: dataObj,
+      };
+      console.log(dataObj);
+
+       await this.$store
+        .dispatch("addData", payload)
+        .then(() => {
+          EventBus.emit("notify", {
+            type: "success",
+            title: "Wartung gespeichert",
+            message:
+              "Die Daten wurden erfolgreich in die Datenbank geschrieben.",
+            subMessage: "Sie werden automatisch weitergeleitet.",
+            iconAsButton: true,
+            action: "redirect",
+            icon: "faIcon fa-solid fa-circle-check",
+            timeOut: true,
+            componentName: "EquipmentPage",
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          
+        });
     },
     cancelReview(){
       this.$router.go(-1);

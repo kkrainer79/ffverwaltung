@@ -8,11 +8,14 @@ const state = {
   userId: null,
   idToken: null,
   refreshToken: null,
+  stayLoggedIn: null,
+  userEmail: "",
 };
 
 const getters = {
   isAuthenticated: (state) => !!state.idToken,
   idToken: (state) => state.idToken,
+  userEmail: (state) => state.userEmail,
 };
 
 const mutations = {
@@ -21,6 +24,7 @@ const mutations = {
     state.idToken = payload.idToken;
     state.refreshToken = payload.refreshToken;
     state.stayLoggedIn = payload.stayLoggedIn;
+    state.userEmail = payload.userEmail;
   },
 };
 
@@ -52,12 +56,12 @@ const actions = {
             context.dispatch("autoLogOut");
           }, expiresIn);
         }
-
         context.commit("setUser", {
           userId: response.data.localId,
           idToken: response.data.idToken,
           refreshToken: response.data.refreshToken,
-
+          stayLoggedIn: payload.stayLoggedIn,
+          userEmail: response.data.email,
         });
       })
       .catch((error) => {

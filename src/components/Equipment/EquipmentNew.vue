@@ -394,7 +394,6 @@ export default {
         manual: manualPath,
         equipmentImage: imagePath,
         equipmentId: values.equipmentId,
-        status: "",
         dealer: values.dealer,
         dealerName: values.dealerName,
         label: values.label,
@@ -407,8 +406,9 @@ export default {
         }
       }
 
+      let path = `equipment/${dataObject.equipmentId}`;
       const payload = {
-        collection: "equipment",
+        collection: path,
         data: dataObject,
       };
 

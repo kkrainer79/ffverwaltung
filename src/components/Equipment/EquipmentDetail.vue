@@ -195,7 +195,7 @@ export default {
     item() {
       let item = {};
       for (let i = 0; i < this.equipments.length; i++) {
-        if (this.equipments[i].equipmentId === this.itemId) {
+        if (this.equipments[i].id === this.itemId) {
           item = this.equipments[i];
         }
       }
@@ -246,7 +246,7 @@ export default {
   mounted() {
     this.itemId = Number(this.$route.params.id);
     for (let i = 0; i < this.equipments.length; i++) {
-      if (this.equipments[i].equipmentId === this.itemId) {
+      if (this.equipments[i].id === this.itemId) {
         this.imagePath = this.equipments[i].equipmentImage;
         this.invoicePath = this.equipments[i].invoice;
         this.manualPath = this.equipments[i].manual;

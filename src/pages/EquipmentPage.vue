@@ -240,7 +240,7 @@ export default {
         let item = [
           /* DATA COLUMNS */
           {
-            data: this.equipments[i].equipmentId,
+            data: this.equipments[i].id,
             action: "showDetail",
             componentName: "EquipmentDetail",
           },
@@ -265,7 +265,7 @@ export default {
             componentName: "EquipmentDetail",
           },
           {
-            data: this.equipments[i].purchaseDate,
+            data: this.equipments[i].latestReview,
             action: "showDetail",
             componentName: "EquipmentDetail",
           },
@@ -328,6 +328,7 @@ export default {
           break;
       }
     },
+    
   },
 
   created() {},

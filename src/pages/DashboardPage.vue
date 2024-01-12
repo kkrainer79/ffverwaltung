@@ -41,7 +41,7 @@ export default {
     },
   },
   async mounted() {
-      await this.$store.dispatch("getEquipmentId");
+      await this.$store.dispatch("getNewId");
       await this.$store.dispatch("getData");
     },
 };

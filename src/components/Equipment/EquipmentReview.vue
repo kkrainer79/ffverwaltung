@@ -1,114 +1,113 @@
 <template>
   <div class="container-flex">
     <the-nav-bar @changeComponent="changeComponent"></the-nav-bar>
-  <div class="container">
-    <div>
-      <h1>EQUIPMENT-WARTUNG</h1>
-    </div>
-    <Form>
-      <div class="container">
+    <div class="container">
+      <div>
+        <h1>EQUIPMENT-WARTUNG</h1>
+      </div>
+      <Form>
+        <div class="container">
+          <div class="row">
+            <div class="col-3">
+              <div class="input-group mt-3">
+                <Field
+                  as="input"
+                  name="searchId"
+                  type="number"
+                  class="form-control"
+                  id="searchId"
+                  v-model="this.searchId"
+                  @load="findEquipment"
+                  @keyup="findEquipment"
+                  placeholder="ID des Equipments eingeben..."
+                >
+                </Field>
+                <div class="input-group-append">
+                  <span v-if="!itemFound" class="input-group-text">
+                    <span
+                      class="fa-solid fa-magnifying-glass review-icon"
+                    ></span>
+                  </span>
+                  <span v-else class="input-group-text review-found">
+                    <span class="fa-solid fa-check review-icon"></span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Form>
+
+      <div class="container mt-4" v-if="itemFound">
         <div class="row">
           <div class="col-3">
-            <div class="input-group mt-3">
-              <Field
-                as="input"
-                name="searchId"
-                type="number"
-                class="form-control"
-                id="searchId"
-                v-model="this.searchId"
-                @load="findEquipment"
-                @keyup="findEquipment"
-                placeholder="ID des Equipments eingeben..."
-              >
-              </Field>
-              <div class="input-group-append">
-                <span v-if="!itemFound" class="input-group-text">
-                  <span class="fa-solid fa-magnifying-glass review-icon"></span>
-                </span>
-                <span v-else class="input-group-text review-found">
-                  <span class="fa-solid fa-check review-icon"></span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Form>
-
-    <div class="container mt-4" v-if="itemFound">
-      <div class="row">
-        <div class="col-3">
-          <div class="card">
-            <div class="card-header review-card-header">
-              {{ this.item[0].equipmentName }}
-            </div>
-            <div class="card-body">
-              <span>
-                {{ this.item[0].manufacturer }}
-                {{ this.item[0].type }}
-              </span>
-              <div>
-                {{ this.item[0].equipmentCategory }}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row mt-5">
-          <div class="col-3">
             <div class="card">
-              <div class="card-header review-capture-card">
-                WARTUNG ERFASSEN
+              <div class="card-header review-card-header">
+                {{ this.item[0].equipmentName }}
               </div>
               <div class="card-body">
-                <Form>
-                  <div class="container">
-                    <div class="row">
-                      <div class="col-12">
-                        <Field
-                          as="textarea"
-                          name="review"
-                          type="text"
-                          class="form-control review-textarea"
-                          id="review"
-                          placeholder="Anmerkungen..."
-                        >
-                        </Field>
+                <span>
+                  {{ this.item[0].manufacturer }}
+                  {{ this.item[0].type }}
+                </span>
+                <div>
+                  {{ this.item[0].equipmentCategory }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-5">
+            <div class="col-3">
+              <div class="card">
+                <div class="card-header review-capture-card">
+                  WARTUNG ERFASSEN
+                </div>
+                <div class="card-body">
+                  <Form>
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-12">
+                          <Field
+                            as="textarea"
+                            name="review"
+                            type="text"
+                            class="form-control review-textarea"
+                            id="review"
+                            placeholder="Anmerkungen..."
+                          >
+                          </Field>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Form>
+                  </Form>
+                </div>
+                <span class="card-footer">{{ this.displayedTime }}</span>
               </div>
-              <span class="card-footer">{{ this.timeStamp }}</span>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="container">
-      <div v-if="itemFound" class="row mt-4">
-        <div class="col-3">
-          <div class="d-grid">
-            <button class="btn btn-ffp" @click="saveReview">
-              Speichern
-            </button>
+      <div class="container">
+        <div v-if="itemFound" class="row mt-4">
+          <div class="col-3">
+            <div class="d-grid">
+              <button class="btn btn-ffp" @click="saveReview">Speichern</button>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-3">
+            <div class="d-grid">
+              <button class="btn btn-cancel" @click="cancelReview">
+                Abbrechen
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      <div class="row mt-3">
-        <div class="col-3">
-          <div class="d-grid">
-            <button class="btn btn-cancel" @click="cancelReview">
-              Abbrechen
-            </button>
-          </div>
-        </div>
-      </div>
+      <UserNotification></UserNotification>
     </div>
-    <UserNotification></UserNotification>
-  </div>
-
   </div>
 </template>
 
@@ -130,7 +129,9 @@ export default {
       searchId: 0,
       item: [],
       itemFound: false,
+      displayedTime: "",
       timeStamp: "",
+      reviewId: "",
     };
   },
   components: {
@@ -149,7 +150,7 @@ export default {
       this.itemFound = false;
       this.item = [];
       for (let i = 0; i < this.equipments.length; i++) {
-        if (this.equipments[i].equipmentId === this.searchId) {
+        if (this.equipments[i].id === this.searchId) {
           this.item.push(this.equipments[i]);
         }
       }
@@ -161,6 +162,7 @@ export default {
     getTimeStamp() {
       let time = new Date().getTime();
       let date = new Date(time);
+      this.reviewId = date.getTime();
       let options = {
         weekday: "short",
         year: "numeric",
@@ -170,24 +172,56 @@ export default {
         minute: "numeric",
         second: "numeric",
       };
+      this.displayedTime = date.toLocaleString("de-AT", options);
+
+      options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+      };
       this.timeStamp = date.toLocaleString("de-AT", options);
+      let day = ("0" + (date.getDate())).slice(-2);
+      let month = ("0" + (date.getMonth() + 1)).slice(-2);
+      let year = String(date.getFullYear());
+      let hour = ("0" + (date.getHours())).slice(-2);
+      let minutes = ("0" + (date.getMinutes())).slice(-2);
+      let seconds = ("0" + (date.getSeconds())).slice(-2);
+           
+      this.reviewId = `${year}-${month}-${day}_${hour}:${minutes}:${seconds}`;
+
     },
     async saveReview() {
-      let path = `equipment/${this.item[0].firestoreId}/reviews`;
+      let path = `equipment/${this.item[0].id}/reviews`;
       let review = document.getElementById("review").value;
       let dataObj = {
+        id: this.reviewId,
         user: this.userEmail,
         time: this.timeStamp,
         review: review,
       };
+
+      /* gathering needed information to save review and update concerning document (updateObj): */
       const payload = {
         collection: path,
         data: dataObj,
       };
-      console.log(dataObj);
 
-       await this.$store
+      await this.$store
         .dispatch("addData", payload)
+        .then(() => {
+          let updateObj = {
+            latestReview: this.timeStamp,
+          };
+          let updatePayload = {
+            collection: "equipment",
+            docId: this.item[0].id,
+            data: updateObj,
+          };
+          this.$store.dispatch("updateDocument", updatePayload);
+        })
         .then(() => {
           EventBus.emit("notify", {
             type: "success",
@@ -204,16 +238,13 @@ export default {
         })
         .catch((error) => {
           console.log(error);
-          
         });
     },
-    cancelReview(){
+    cancelReview() {
       this.$router.go(-1);
     },
   },
-  created() {
-    
-  },
+  created() {},
 
   mounted() {
     this.searchId = Number(this.$route.params.id);

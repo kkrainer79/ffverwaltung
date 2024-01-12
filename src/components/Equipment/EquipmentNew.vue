@@ -276,10 +276,12 @@
         </div>
       </div>
     </Form>
+    <UserNotification></UserNotification>
   </div>
 </template>
 
 <script>
+import UserNotification from "../Tools/UserNotification.vue";
 import { Form, Field } from "vee-validate";
 import * as yup from "yup";
 import store from "@store/index.js";
@@ -314,6 +316,7 @@ export default {
   components: {
     Form,
     Field,
+    UserNotification,
   },
 
   computed: {
@@ -393,11 +396,12 @@ export default {
         invoice: invoicePath,
         manual: manualPath,
         equipmentImage: imagePath,
-        equipmentId: values.equipmentId,
+        id: values.equipmentId,
         dealer: values.dealer,
         dealerName: values.dealerName,
         label: values.label,
         discarded: false,
+        latestReview: null,
       };
 
       for (let key in dataObject) {
@@ -406,7 +410,7 @@ export default {
         }
       }
 
-      let path = `equipment/${dataObject.equipmentId}`;
+      let path = "equipment";
       const payload = {
         collection: path,
         data: dataObject,
@@ -416,8 +420,8 @@ export default {
         .dispatch("addData", payload)
         .then(() => {
           this.$store.dispatch(
-            "updateEquipmentId",
-            Number(dataObject.equipmentId)
+            "updateNewId",
+            Number(dataObject.id)
           );
           this.message = true;
           this.isLoading = false;

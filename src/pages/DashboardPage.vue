@@ -20,18 +20,19 @@
           </div>
         </div>
       </div>
+      <UserNotification></UserNotification>
     </div>
 
 </template>
 
 <script>
 import TheNavBar from "@components/TheNavBar.vue";
-
+import UserNotification from "@/components/Tools/UserNotification.vue";
 
 export default {
   name: "DashboardPage",
   components: {
-   
+   UserNotification,
     TheNavBar,
 
   },

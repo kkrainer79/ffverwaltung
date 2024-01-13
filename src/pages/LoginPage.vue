@@ -1,104 +1,111 @@
 <template>
-  <transition name="fade" mode="out-in" appear>
-    <div>
-      <div class="container-fluid vh-100 vw-100 bg-sm login-container">
-        <div>
-          <div class="row">
-            <div class="col-12">
-              <img
-                src="@assets/logo.png"
-                class="container my-3 py-5 pic-center"
-                alt="Logo der FF Preding"
-              />
+  <div>
+    <transition name="fade" mode="out-in" appear>
+      <div>
+        <div class="container-fluid vh-100 vw-100 bg-sm login-container">
+          <div>
+            <div class="row">
+              <div class="col-12">
+                <img
+                  src="@assets/logo.png"
+                  class="container my-3 py-5 pic-center"
+                  alt="Logo der FF Preding"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="fs-3">Willkommen im</div>
+            </div>
+            <div class="row">
+              <div class="headline display-3">Serviceportal</div>
+            </div>
+            <div class="row">
+              <div class="fs-3 mb-5">der Feuerwehr Preding</div>
+            </div>
+            <div class="row mt-2">
+              <div class="my-3">Bitte authentifizieren:</div>
             </div>
           </div>
-          <div class="row">
-            <div class="fs-3">Willkommen im</div>
-          </div>
-          <div class="row">
-            <div class="headline display-3">Serviceportal</div>
-          </div>
-          <div class="row">
-            <div class="fs-3 mb-5">der Feuerwehr Preding</div>
-          </div>
-          <div class="row mt-2">
-            <div class="my-3">Bitte authentifizieren:</div>
-          </div>
-        </div>
 
-        <Form
-          class="text-start"
-          @submit="submitData"
-          :validation-schema="schema"
-        >
-          <div class="form-row">
-            <div class="form-group col-2 offset-5">
-              <label for="email">Benutzer</label>
-              <Field
-                as="input"
-                name="email"
-                type="email"
-                class="form-control"
-                id="email"
-              />
-              <!-- <small class="text-danger" v-if="errors.email">{{
+          <Form
+            class="text-start"
+            @submit="submitData"
+            :validation-schema="schema"
+          >
+            <div class="form-row">
+              <div class="form-group col-2 offset-5">
+                <label for="email">Benutzer</label>
+                <Field
+                  as="input"
+                  name="email"
+                  type="email"
+                  class="form-control"
+                  id="email"
+                />
+                <!-- <small class="text-danger" v-if="errors.email">{{
               errors.email
             }}</small> -->
+              </div>
             </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-2 offset-5 mt-2">
-              <label for="password">Passwort </label>
-              <Field
-                as="input"
-                name="password"
-                type="password"
-                class="form-control"
-                id="password"
-              />
-              <!-- <small class="text-danger" v-if="errors.password"
+            <div class="form-row">
+              <div class="form-group col-2 offset-5 mt-2">
+                <label for="password">Passwort </label>
+                <Field
+                  as="input"
+                  name="password"
+                  type="password"
+                  class="form-control"
+                  id="password"
+                />
+                <!-- <small class="text-danger" v-if="errors.password"
               >{{ errors.password }}
             </small> -->
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-2 offset-5 mt-2">
-              <input
-                type="checkbox"
-                class="mr-2"
-                :checked="stayLoggedIn"
-                @change="setAutoLogin"
-              />
-              <a @click="setAutoLogin"
-                ><label type="button" class="input-label"
-                  >eingeloggt bleiben</label
-                ></a
-              >
-            </div>
-          </div>
-          <div class="form-row mt-3">
-            <div class="form-group col-md-8 offset-2">
-              <div class="d-grid col-2 offset-5">
-                <button class="btn btn-ffp">
-                  <span v-if="!isLoading">Login</span>
-                  <span v-else class="spinner-border spinner-border-sm"></span>
-                </button>
-              </div>
-              <div class="col-10 offset-1 text-danger text-center mt-2">
-                <small v-if="error">{{ errorText }}</small>
               </div>
             </div>
+            <div class="form-row">
+              <div class="form-group col-2 offset-5 mt-2">
+                <input
+                  type="checkbox"
+                  class="mr-2"
+                  :checked="stayLoggedIn"
+                  @change="setAutoLogin"
+                />
+                <a @click="setAutoLogin"
+                  ><label type="button" class="input-label"
+                    >eingeloggt bleiben</label
+                  ></a
+                >
+              </div>
+            </div>
+            <div class="form-row mt-3">
+              <div class="form-group col-md-8 offset-2">
+                <div class="d-grid col-2 offset-5">
+                  <button class="btn btn-ffp">
+                    <span v-if="!isLoading">Login</span>
+                    <span
+                      v-else
+                      class="spinner-border spinner-border-sm"
+                    ></span>
+                  </button>
+                </div>
+                <div class="col-10 offset-1 text-danger text-center mt-2">
+                  <small v-if="error">{{ errorText }}</small>
+                </div>
+              </div>
+            </div>
+          </Form>
+          <div class="copyright col-10 offset-1">
+            <small>&copy; LM d.V. Klaus Krainer, MSc | FF Preding</small>
           </div>
-        </Form>
-        <div class="copyright col-10 offset-1">
-          <small>&copy; LM d.V. Klaus Krainer, MSc | FF Preding</small>
         </div>
       </div>
-    </div>
-  </transition>
+    </transition>
+    <UserNotification></UserNotification>
+  </div>
 </template>
 
 <script>
+import UserNotification from "@/components/Tools/UserNotification.vue";
 import { Form, Field } from "vee-validate";
 import * as yup from "yup";
 
@@ -107,6 +114,7 @@ export default {
   components: {
     Form,
     Field,
+    UserNotification,
   },
   data() {
     //Validierung mit YUP und Vee-Validate
@@ -167,7 +175,7 @@ export default {
         .then(() => {
           this.loadData();
         })
-        .then(() => { 
+        .then(() => {
           this.$router.push({ name: "DashboardPage" });
           this.isLoading = false;
         })

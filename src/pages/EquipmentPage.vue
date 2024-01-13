@@ -270,7 +270,7 @@ export default {
             componentName: "EquipmentDetail",
           },
           {
-            data: this.equipments[i].serviceLife,
+            data: this.equipments[i].nextReview,
             action: "showDetail",
             componentName: "EquipmentDetail",
           },

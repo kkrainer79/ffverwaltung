@@ -169,11 +169,12 @@
             :value="this.newEquipment.maintenanceInterval"
             @change="saveInputData"
           >
-            <option value="" disabled>Bitte wählen</option>
-            <option value="1">monatlich</option>
-            <option value="3">vierteljährlich</option>
-            <option value="6">halbjährlich</option>
-            <option value="12">jährlich</option>
+          <!-- option values in milliseconds! -->
+            <option value="0" selected>bei Bedarf</option>
+            <option value="2628000000">monatlich</option>
+            <option value="7884000000">vierteljährlich</option>
+            <option value="15768000000">halbjährlich</option>
+            <option value="31536000000">jährlich</option>
           </Field>
           <!-- <small class="text-danger" v-if="errors.email">{{
               errors.email
@@ -304,12 +305,16 @@ export default {
 
     return {
       id: store.getters.newId,
-      newEquipment: {},
+      newEquipment: {
+        maintenanceInterval: 0,
+      },
       equipmentCategory: "XXX",
       schema,
       isLoading: false,
       fileType: "",
       message: false,
+      purchaseDate: "",
+      maintenanceInterval: "",
     };
   },
 
@@ -324,6 +329,7 @@ export default {
       let label = `${this.equipmentCategory}-${this.id}`;
       return label;
     },
+    
   },
 
   methods: {
@@ -338,6 +344,9 @@ export default {
 
     async submitData(values) {
       this.isLoading = true;
+      this.purchaseDate = values.purchaseDate;
+      console.log(values.purchaseDate);
+      this.maintenanceInterval = values.maintenanceInterval;
       let imagePath = "";
       let invoicePath = "";
       let manualPath = "";
@@ -401,8 +410,12 @@ export default {
         dealerName: values.dealerName,
         label: values.label,
         discarded: false,
-        latestReview: null,
+        latestReview: "noch nie gewartet",
+        nextReview: this.getNextReviewDate(values.purchaseDate, values.maintenanceInterval),
       };
+      if (dataObject.maintenanceInterval === undefined) {
+        dataObject.maintenanceInterval = 0;
+      }
 
       for (let key in dataObject) {
         if (dataObject[key] === undefined) {
@@ -419,10 +432,7 @@ export default {
       await this.$store
         .dispatch("addData", payload)
         .then(() => {
-          this.$store.dispatch(
-            "updateNewId",
-            Number(dataObject.id)
-          );
+          this.$store.dispatch("updateNewId", Number(dataObject.id));
           this.message = true;
           this.isLoading = false;
           EventBus.emit("notify", {
@@ -437,13 +447,25 @@ export default {
             timeOut: true,
             componentName: "EquipmentPage",
           });
-          
-
         })
         .catch((error) => {
           console.log(error);
           this.isLoading = false;
         });
+    },
+
+    getNextReviewDate(date, maintenanceInterval) {
+      let nextReviewDate = "";
+      let nextReviewTime = Number(Date.parse(date)) + Number(maintenanceInterval);
+      if (maintenanceInterval != "0") {
+        nextReviewDate = new Date(nextReviewTime);
+        let month = ("0" + (nextReviewDate.getMonth() + 1)).slice(-2);
+        let year = String(nextReviewDate.getFullYear());
+        nextReviewDate = `${year} ${month}`;
+      } else {
+        nextReviewDate = "bei Bedarf";
+      }
+      return nextReviewDate;
     },
 
     getPath(file, fileType, id) {
@@ -459,7 +481,7 @@ export default {
       this.message = true;
     },
     cancelNewEquipment() {
-      this.$router.push({name: "EquipmentPage"});
+      this.$router.push({ name: "EquipmentPage" });
     },
   },
 };

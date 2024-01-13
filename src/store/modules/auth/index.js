@@ -148,7 +148,6 @@ const actions = {
     });
   },
   autoLogOut(context) {
-    this.$router.push({ name: "LoginPage" });
     context.dispatch("logOut");
     EventBus.emit("notify", {
       type: "success",
@@ -156,10 +155,10 @@ const actions = {
       message: "Aufgrund eines Timeouts wurden Sie vom Serviceportal abgemeldet.",
       subMessage: "Bitte melden Sie sich neu an.",
       iconAsButton: true,
-      action: "close",
+      action: "autoLogout",
       icon: "faIcon fa-solid fa-circle-check",
       timeOut: false,
-      componentName: "",
+      componentName: "LoginPage",
     });
   },
 };

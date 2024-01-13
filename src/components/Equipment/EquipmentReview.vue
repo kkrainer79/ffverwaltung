@@ -132,6 +132,7 @@ export default {
       displayedTime: "",
       timeStamp: "",
       reviewId: "",
+      reviewDate: "",
     };
   },
   components: {
@@ -191,6 +192,9 @@ export default {
       let seconds = ("0" + (date.getSeconds())).slice(-2);
            
       this.reviewId = `${year}-${month}-${day}_${hour}:${minutes}:${seconds}`;
+      this.reviewDate = `${year}-${month}-${day}`;
+      console.log(this.reviewDate);
+      console.log(this.item[0].maintenanceInterval);
 
     },
     async saveReview() {
@@ -214,6 +218,7 @@ export default {
         .then(() => {
           let updateObj = {
             latestReview: this.timeStamp,
+            nextReview: this.getNextReviewDate(this.reviewDate, this.item[0].maintenanceInterval),            
           };
           let updatePayload = {
             collection: "equipment",
@@ -242,6 +247,20 @@ export default {
     },
     cancelReview() {
       this.$router.go(-1);
+    },
+    getNextReviewDate(date, maintenanceInterval) {
+      let nextReviewDate = "";
+      let nextReviewTime = Number(Date.parse(date)) + Number(maintenanceInterval);
+      console.log(nextReviewTime);
+      if (maintenanceInterval != "0") {
+        nextReviewDate = new Date(nextReviewTime);
+        let month = ("0" + (nextReviewDate.getMonth() + 1)).slice(-2);
+        let year = String(nextReviewDate.getFullYear());
+        nextReviewDate = `${year} ${month}`;
+      } else {
+        nextReviewDate = "bei Bedarf";
+      }
+      return nextReviewDate;
     },
   },
   created() {},

@@ -68,6 +68,7 @@ export default {
       iconAsButton: false,
       timeOut: false,
       componentName: "",
+      time : 3500,
     };
   },
 
@@ -108,26 +109,30 @@ export default {
       if (this.timeOut) {
         setTimeout(
           this.runAction,
-          5000
+          this.time
         );
       } else this.runAction;
     },
 
     runAction() {
+
       switch (this.action) {
         case "close":
           this.clearNotification();
           break;
-        case "redirect": {
+        case "redirect": 
           this.$router.push({ name: this.componentName });
           this.clearNotification();
           break;
-        }
+          case "autoLogout":
+            this.$router.push({name: this.componentName});
+            this.clearNotification();
       }
     },
 
     clearNotification() {
       this.show = false;
+      this.time = 0;
 
       setTimeout(
         function () {

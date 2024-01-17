@@ -72,7 +72,7 @@
                             name="review"
                             type="text"
                             class="form-control review-textarea"
-                            id="review"
+                            id="reviewText"
                             placeholder="Anmerkungen..."
                           >
                           </Field>
@@ -131,6 +131,7 @@ export default {
       itemFound: false,
       displayedTime: "",
       timeStamp: "",
+      timeString: "",
       reviewId: "",
       reviewDate: "",
     };
@@ -161,9 +162,13 @@ export default {
       }
     },
     getTimeStamp() {
-      let time = new Date().getTime();
-      let date = new Date(time);
-      this.reviewId = date.getTime();
+      /* let time = "now"
+      let date = String with date from "now" */
+      this.timeStamp = new Date().getTime();
+      let date = new Date(this.timeStamp);
+
+
+      //set options for this.displayedTime (shown on card-footer)
       let options = {
         weekday: "short",
         year: "numeric",
@@ -175,6 +180,7 @@ export default {
       };
       this.displayedTime = date.toLocaleString("de-AT", options);
 
+      //set options for reviewId & 
       options = {
         year: "numeric",
         month: "long",
@@ -183,49 +189,58 @@ export default {
         minute: "numeric",
         second: "numeric",
       };
-      this.timeStamp = date.toLocaleString("de-AT", options);
-      let day = ("0" + (date.getDate())).slice(-2);
+      this.timeString = date.toLocaleString("de-AT", options);
+      let day = ("0" + date.getDate()).slice(-2);
       let month = ("0" + (date.getMonth() + 1)).slice(-2);
       let year = String(date.getFullYear());
-      let hour = ("0" + (date.getHours())).slice(-2);
-      let minutes = ("0" + (date.getMinutes())).slice(-2);
-      let seconds = ("0" + (date.getSeconds())).slice(-2);
-           
-      this.reviewId = `${year}-${month}-${day}_${hour}:${minutes}:${seconds}`;
+      let hour = ("0" + date.getHours()).slice(-2);
+      let minutes = ("0" + date.getMinutes()).slice(-2);
+      let seconds = ("0" + date.getSeconds()).slice(-2); 
+
+      this.reviewId = `${this.item[0].id}${year}${month}${day}${hour}${minutes}${seconds}`;
       this.reviewDate = `${year}-${month}-${day}`;
-      console.log(this.reviewDate);
-      console.log(this.item[0].maintenanceInterval);
 
     },
     async saveReview() {
       let path = `equipment/${this.item[0].id}/reviews`;
-      let review = document.getElementById("review").value;
+      let reviewText = document.getElementById("reviewText").value;
       let dataObj = {
         id: this.reviewId,
         user: this.userEmail,
         time: this.timeStamp,
-        review: review,
+        timeString: this.timeString,
+        reviewText: reviewText,
       };
 
-      /* gathering needed information to save review and update concerning document (updateObj): */
-      const payload = {
+      const reviewPayload = {
         collection: path,
         data: dataObj,
       };
 
-      await this.$store
-        .dispatch("addData", payload)
-        .then(() => {
-          let updateObj = {
-            latestReview: this.timeStamp,
-            nextReview: this.getNextReviewDate(this.reviewDate, this.item[0].maintenanceInterval),            
+      let nextReviewData = this.getNextReviewDate(
+        this.reviewDate,
+        this.item[0].maintenanceInterval
+      );
+
+      let updateObj = {
+            latestReviewString: this.reviewDate,
+            latestReviewTimeStamp: this.timeStamp,
+            nextReviewString: nextReviewData.nextReviewString,
+            nextReviewTimeStamp: nextReviewData.nextReviewTimeStamp,
           };
           let updatePayload = {
             collection: "equipment",
             docId: this.item[0].id,
             data: updateObj,
           };
+
+      await this.$store
+        .dispatch("setData", reviewPayload)
+        .then(() => {
           this.$store.dispatch("updateDocument", updatePayload);
+        })
+        .then(() => {
+          this.$store.dispatch("getSingleDocument", updatePayload);
         })
         .then(() => {
           EventBus.emit("notify", {
@@ -250,8 +265,8 @@ export default {
     },
     getNextReviewDate(date, maintenanceInterval) {
       let nextReviewDate = "";
-      let nextReviewTime = Number(Date.parse(date)) + Number(maintenanceInterval);
-      console.log(nextReviewTime);
+      let nextReviewTime =
+        Number(Date.parse(date)) + Number(maintenanceInterval);
       if (maintenanceInterval != "0") {
         nextReviewDate = new Date(nextReviewTime);
         let month = ("0" + (nextReviewDate.getMonth() + 1)).slice(-2);
@@ -260,7 +275,11 @@ export default {
       } else {
         nextReviewDate = "bei Bedarf";
       }
-      return nextReviewDate;
+      let returnObj = {
+        nextReviewString: nextReviewDate,
+        nextReviewTimeStamp: nextReviewTime,
+      };
+      return returnObj;
     },
   },
   created() {},

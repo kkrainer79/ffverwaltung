@@ -346,11 +346,7 @@ export default {
         componentName: componentName,
         id: id,
       };
-      switch (action) {
-        case "showDetail":
-          this.$emit("userInput", payload);
-          break;
-      }
+      this.$emit("userInput", payload);
     },
 
     showFilter() {
@@ -511,7 +507,6 @@ export default {
   created() {},
 
   mounted() {
-    this.sortTable(0);
     this.sortTable(0);
     for (let i = 0; i < this.defaultFilters.length; i++) {
       this.filters[i] = this.defaultFilters[i];

@@ -187,9 +187,6 @@ export default {
     };
   },
 
-  /* props: {
-    itemId: Number,
-  }, */
 
   computed: {
     item() {

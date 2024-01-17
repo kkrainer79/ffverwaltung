@@ -2,20 +2,7 @@
   <transition name="fade" mode="out-in">
     <div
       v-show="show"
-      v-if="type == 'warning'"
-      id="userNotification"
-      class="userNotification"
-      :class="notificationClass"
-    >
-      <div><i class="faIcon fa-solid fa-circle-check userNotificationIconAsButton"></i></div>
-      <div class="userNotificationTitle">{{ this.title }}</div>
-      <button v-if="showButton" @click="runAction()">
-        {{ this.buttonTitle }}
-      </button>
-    </div>
-    <div
-      v-show="show"
-      v-else-if="type == 'success'"
+      type="success"
       id="userNotification"
       class="userNotification"
       :class="notificationClass"
@@ -36,22 +23,10 @@
         {{ this.subMessage }}
       </div>
     </div>
-    <div
-      v-show="show"
-      v-else
-      id="userNotification"
-      class="userNotification"
-      :class="notificationClass"
-    >
-      <div><i class="fa-solid fa-circle-check faIcon"></i></div>
-      <div class="userNotificationTitle">{{ this.title }}</div>
-      <button v-if="showButton" @click="runAction()">
-        {{ this.buttonTitle }}
-      </button>
-    </div>
   </transition>
 </template>
 
+<!-- TUTORIAL: https://serversideup.net/vue-3-web-notification-component/ -->
 <script>
 import { EventBus } from "@/event-bus.js";
 
@@ -68,14 +43,15 @@ export default {
       iconAsButton: false,
       timeOut: false,
       componentName: "",
-      time : 3500,
+      time: 3500,
+      timeoutId: 0,
     };
   },
 
   computed: {
     notificationClass() {
       return {
-        "userNotificationSuccess": this.type === "success",
+        userNotificationSuccess: this.type === "success",
         "notification-warning": this.type === "warning",
         "notification-failure": this.type === "failure",
       };
@@ -83,7 +59,6 @@ export default {
   },
 
   methods: {
-    performAction() {},
     bindEvents() {
       EventBus.on(
         "notify",
@@ -94,66 +69,65 @@ export default {
     },
 
     handleNotification(data) {
+      this.show = true;
       this.type = data.type;
       this.title = data.title;
       this.message = data.message;
       this.subMessage = data.subMessage;
       this.action = data.action;
-      this.show = true;
       this.timeOut = data.timeOut;
       this.componentName = data.componentName;
       this.icon = data.icon;
       this.iconAsButton = data.iconAsButton;
 
-
       if (this.timeOut) {
+        console.log("set timeout");
         setTimeout(
-          this.runAction,
+          function () {
+            this.runAction();
+          }.bind(this),
           this.time
         );
-      } else this.runAction;
+      } else {
+        this.runAction();
+      }
     },
 
     runAction() {
-
       switch (this.action) {
         case "close":
           this.clearNotification();
           break;
-        case "redirect": 
+        case "redirect":
           this.$router.push({ name: this.componentName });
           this.clearNotification();
           break;
-          case "autoLogout":
-            this.$router.push({name: this.componentName});
-            this.clearNotification();
+        case "autoLogout":
+          this.$router.push({ name: this.componentName });
+          this.clearNotification();
+          break;
       }
     },
 
     clearNotification() {
       this.show = false;
-      this.time = 0;
-
-      setTimeout(
-        function () {
-          this.type = "";
-          this.title = "";
-          this.message = "";
-          this.action = "";
-        }.bind(this),
-        1000
-      );
+      this.type = "";
+      this.title = "";
+      this.message = "";
+      this.subMessage = "";
+      this.action = "";
+      this.timeOut = false;
+      this.componentName = "";
+      this.icon = "";
+      this.iconAsButton = "";
     },
   },
 
   mounted() {
+    //attaches an event-listener which listens to the "notify-emit"
     this.bindEvents();
   },
 };
 </script>
 
 <style scoped></style>
-
-EventBus.emit("notify", { type: "warning", title: "Event erfolgreich
-abgefeuert", message: "Hier kommt eine Nachricht hin", action: "close",
-showButton: false, timeOut: true, });

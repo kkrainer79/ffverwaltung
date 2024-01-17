@@ -1,14 +1,15 @@
 <template>
   <div class="container">
-    <h1>EQUIPMENT ANLEGEN</h1>
+    <h1>{{ this.pageTitle }}</h1>
     <Form
       id="newEquipmentForm"
       class="text-start mt-5"
       @submit="submitData"
       :validation-schema="schema"
       v-slot="{ errors }"
-      :key="this.equipmentCategory"
+      :key="this.newEquipment.equipmentCategory"
     >
+      <!-- :key="this.equipmentCategory" -->
       <div class="row">
         <div class="col-lg-3 col-sm-6 col-xs-12">
           <label for="equipmentName">Bezeichnung*</label>
@@ -169,7 +170,7 @@
             :value="this.newEquipment.maintenanceInterval"
             @change="saveInputData"
           >
-          <!-- option values in milliseconds! -->
+            <!-- option values in milliseconds! -->
             <option value="0" selected>bei Bedarf</option>
             <option value="2628000000">monatlich</option>
             <option value="7884000000">vierteljährlich</option>
@@ -234,7 +235,7 @@
             type="text"
             class="form-control"
             id="label"
-            :value="label"
+            :value="this.label"
             readonly
           >
           </Field>
@@ -257,6 +258,7 @@
         <div class="form-group col-lg-2">
           <div class="d-grid">
             <button
+              type="button"
               v-if="!message"
               class="btn btn-cancel"
               @click="cancelNewEquipment"
@@ -305,16 +307,20 @@ export default {
 
     return {
       id: store.getters.newId,
-      newEquipment: {
-        maintenanceInterval: 0,
-      },
+      itemId: 0,
+      equipments: store.getters.equipments,
       equipmentCategory: "XXX",
+      ifCancelledData: {},
       schema,
       isLoading: false,
       fileType: "",
       message: false,
       purchaseDate: "",
       maintenanceInterval: "",
+      newEquipment: {
+        maintenanceInterval: 0,
+      },
+      mode: "new",
     };
   },
 
@@ -329,7 +335,20 @@ export default {
       let label = `${this.equipmentCategory}-${this.id}`;
       return label;
     },
-    
+    item() {
+      let item;
+      for (let i = 0; i < this.equipments.length; i++) {
+        if (this.equipments[i].id === this.itemId) {
+          item = this.equipments[i];
+        }
+      }
+      return item;
+    },
+    pageTitle() {
+      if (this.mode === "new") {
+        return "EQUIPMENT ANLEGEN";
+      } else return "EQUIPMENT BEARBEITEN";
+    },
   },
 
   methods: {
@@ -345,12 +364,12 @@ export default {
     async submitData(values) {
       this.isLoading = true;
       this.purchaseDate = values.purchaseDate;
-      console.log(values.purchaseDate);
       this.maintenanceInterval = values.maintenanceInterval;
       let imagePath = "";
       let invoicePath = "";
       let manualPath = "";
 
+      //set data for image
       if (values.equipmentImageFile) {
         this.fileType = "image";
         imagePath = this.getPath(
@@ -364,7 +383,7 @@ export default {
         };
         this.$store.dispatch("compressImage", imgObject);
       }
-
+      //set data for invoice
       if (values.invoiceFile) {
         this.fileType = "invoice";
         invoicePath = this.getPath(
@@ -378,7 +397,7 @@ export default {
         };
         this.$store.dispatch("fileUpload", invoiceObj);
       }
-
+      //set data for manual
       if (values.manualFile) {
         this.fileType = "manual";
         manualPath = this.getPath(
@@ -392,7 +411,7 @@ export default {
         };
         this.$store.dispatch("fileUpload", manualObj);
       }
-
+      //set dataObject
       const dataObject = {
         equipmentName: values.equipmentName,
         manufacturer: values.manufacturer,
@@ -410,9 +429,53 @@ export default {
         dealerName: values.dealerName,
         label: values.label,
         discarded: false,
-        latestReview: "noch nie gewartet",
-        nextReview: this.getNextReviewDate(values.purchaseDate, values.maintenanceInterval),
+        latestReviewTimeStamp: 0,
+        latestReviewString: "",
+        nextReviewTimeStamp: 0,
+        nextReviewString: "",
       };
+
+      //set data for reviews/maintenance
+      //first: set data for case "new equipment"
+      let date;
+      let interval;
+      let nextReviewObj = {};
+      if (this.mode === "new") {
+        date = Number(Date.parse(values.purchaseDate));
+        interval = Number(values.maintenanceInterval);
+        nextReviewObj = this.getNextReviewDate(date, interval);
+        dataObject.latestReviewString = "noch nie gewartet";
+        dataObject.latestReviewTimeStamp = 0;
+        dataObject.nextReviewString = nextReviewObj.nextReviewDisplay;
+        dataObject.nextReviewTimeStamp = nextReviewObj.nextReviewTimeStamp;
+        
+      }
+      //set data for existing equipment
+      else {
+        if (values.maintenanceInterval != this.item.maintenanceInterval){
+          //possible cases: existing review(s) vs. no existing review
+          //first case: no existing reviews (latestReviewTimeStamp === 0)
+          if (this.item.latestReviewTimeStamp === 0) {
+              date = Number(Date.parse(values.purchaseDate));
+              interval = Number(values.maintenanceInterval);
+              nextReviewObj = this.getNextReviewDate(date, interval);
+              dataObject.latestReviewString = "noch nie gewartet";
+              dataObject.latestReviewTimeStamp = 0;
+              dataObject.nextReviewString = nextReviewObj.nextReviewDisplay;
+              dataObject.nextReviewTimestamp = nextReviewObj.nextReviewTimeStamp;
+          }
+              else {
+                date = Number(this.item.latestReviewTimeStamp);
+                interval = Number(values.maintenanceInterval);
+                nextReviewObj = this.getNextReviewDate(date, interval);
+                dataObject.latestReviewString = this.item.latestReviewString;
+                dataObject.latestReviewTimeStamp = this.item.latestReviewTimeStamp;
+                dataObject.nextReviewString = nextReviewObj.nextReviewDisplay;
+                dataObject.nextReviewTimeStamp = nextReviewObj.nextReviewTimeStamp;
+          }
+        }
+      }
+
       if (dataObject.maintenanceInterval === undefined) {
         dataObject.maintenanceInterval = 0;
       }
@@ -424,20 +487,25 @@ export default {
       }
 
       let path = "equipment";
+
       const payload = {
         collection: path,
+        id: Number(dataObject.id),
+        mode: this.mode,
         data: dataObject,
       };
 
       await this.$store
-        .dispatch("addData", payload)
+        .dispatch("setData", payload)
         .then(() => {
-          this.$store.dispatch("updateNewId", Number(dataObject.id));
+          if (this.mode !== "edit") {
+            this.$store.dispatch("updateNewId", Number(dataObject.id));
+          }
           this.message = true;
           this.isLoading = false;
           EventBus.emit("notify", {
             type: "success",
-            title: "Neues Equipment gespeichert",
+            title: "Equipment gespeichert",
             message:
               "Die Daten wurden erfolgreich in die Datenbank geschrieben.",
             subMessage: "Sie werden automatisch weitergeleitet.",
@@ -456,16 +524,21 @@ export default {
 
     getNextReviewDate(date, maintenanceInterval) {
       let nextReviewDate = "";
-      let nextReviewTime = Number(Date.parse(date)) + Number(maintenanceInterval);
+      let nextReviewTimeStamp = date + maintenanceInterval;
+      let nextReviewDisplay = "";
       if (maintenanceInterval != "0") {
-        nextReviewDate = new Date(nextReviewTime);
+        nextReviewDate = new Date(nextReviewTimeStamp);
         let month = ("0" + (nextReviewDate.getMonth() + 1)).slice(-2);
         let year = String(nextReviewDate.getFullYear());
-        nextReviewDate = `${year} ${month}`;
+        nextReviewDisplay = `${year} ${month}`;
       } else {
-        nextReviewDate = "bei Bedarf";
+        nextReviewDisplay = "bei Bedarf";
       }
-      return nextReviewDate;
+      let returnObj = {
+        nextReviewDisplay: nextReviewDisplay,
+        nextReviewTimeStamp: nextReviewTimeStamp,
+      };
+      return returnObj;
     },
 
     getPath(file, fileType, id) {
@@ -484,6 +557,18 @@ export default {
       this.$router.push({ name: "EquipmentPage" });
     },
   },
+
+  beforeMount() {
+    if (this.$route.params.id != undefined) {
+      this.newEquipment = {};
+      this.itemId = Number(this.$route.params.id);
+      this.mode = "edit";
+      this.newEquipment = { ...this.item };
+      this.id = this.itemId;
+      this.equipmentCategory = this.newEquipment.equipmentCategory;
+    }
+  },
+  mounted() {},
 };
 </script>
 

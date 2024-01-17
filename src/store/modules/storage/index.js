@@ -42,11 +42,19 @@ const mutations = {
   },
 
   addEquipments(state, payload) {
-    state.equipments.push(payload);
+    if (payload.mode == "edit") {
+      for (let i = 0; i < state.equipments.length; i++) {
+        if (payload.id === state.equipments[i].id) {
+          state.equipments[i] = payload.data;
+        }
+      }
+    } else {
+      state.equipments.push(payload.data);
+    }
   },
 
   setMembers(state, payload) {
-    state.members = payload;
+    state.members = payload.data;
   },
 
   addMembers(state, payload) {
@@ -113,7 +121,7 @@ const actions = {
     }
   },
 
-  async addData(context, payload) {
+  async setData(context, payload) {
     await setDoc(
       doc(firestore, payload.collection, String(payload.data.id)),
       payload.data
@@ -121,10 +129,10 @@ const actions = {
       .then(() => {
         switch (payload.collection) {
           case "equipment":
-            context.commit("addEquipments", payload.data);
+            context.commit("addEquipments", payload);
             break;
           case "members":
-            context.commit("addMembers", payload.data);
+            context.commit("addMembers", payload);
             break;
           default:
             break;
@@ -139,10 +147,10 @@ const actions = {
 
   getNewId(context) {
     //gets next unused itemId from database
-    const docRef = doc(firestore, "configData", "ZocUScAesXH8ijJPqfTu");
+    const docRef = doc(firestore, "configData", "nextId");
     getDoc(docRef)
       .then((response) => {
-        let id = Number(response.data().equIdCounter);
+        let id = Number(response.data().idCounter);
         context.commit("setNewId", id);
       })
       .catch((error) => {
@@ -153,9 +161,9 @@ const actions = {
   async updateNewId(context, payload) {
     /* updates next unused equipmentId in database and local store
     separated from common updateDoc-function and exposed as singular function with hardcoded docRef because of its importance! */
-    const docRef = doc(firestore, "configData", "ZocUScAesXH8ijJPqfTu");
+    const docRef = doc(firestore, "configData", "nextId");
     const newId = payload + 1;
-    await updateDoc(docRef, { equIdCounter: newId })
+    await updateDoc(docRef, { idCounter: newId })
       .then(() => {
         context.commit("setNewId", newId);
       })
@@ -168,10 +176,11 @@ const actions = {
     //updates docs in firestore-collections (used for all data except the itemId (equipmentId))
     const docRef = doc(firestore, payload.collection, String(payload.docId));
     await updateDoc(docRef, payload.data).then(() => {
-      context.dispatch("getSingleDocument", payload);
+    })
+    .catch((error) => {
+      console.log(error);
     });
 
-    //context.commit("updateDoc", payload);
   },
 
   async getSingleDocument(context, payload) {
@@ -215,8 +224,7 @@ const actions = {
   fileUpload(context, payload) {
     const storageRef = ref(storage, payload.path);
     uploadBytes(storageRef, payload.file)
-      .then((snapshot) => {
-        console.log(snapshot);
+      .then(() => {
       })
       .catch((error) => {
         console.log(error);

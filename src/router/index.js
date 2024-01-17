@@ -67,6 +67,14 @@ const routes = [
     },
   },
   {
+    name: "EquipmentEdit",
+    path: "/equipment/edit/:id",
+    component: EquipmentNew,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
     name: "EquipmentDetail",
     path: "/equipment/:id",
     component: EquipmentDetail,

@@ -21,7 +21,7 @@
       <FloatingActionButton
         v-if="fabActive"
         :fabMenus="fabFunctions"
-        @emitUserInput="fabListener"
+        @emitUserInput="userInputHandler"
       ></FloatingActionButton>
     </div>
   </div>
@@ -227,8 +227,6 @@ export default {
     };
   },
 
-  
-
   computed: {
     setTableData() {
       /*data has to be set up in same order as columnTitles
@@ -265,28 +263,28 @@ export default {
             componentName: "EquipmentDetail",
           },
           {
-            data: this.equipments[i].latestReview,
+            data: this.equipments[i].latestReviewString,
             action: "showDetail",
             componentName: "EquipmentDetail",
           },
           {
-            data: this.equipments[i].nextReview,
+            data: this.equipments[i].nextReviewString,
             action: "showDetail",
             componentName: "EquipmentDetail",
           },
           /* ICONS */
           {
             class: "fa-solid fa-pencil table-icon",
-            title: "Details",
+            title: "Details bearbeiten",
             type: "button",
-            action: "showDetail",
-            componentName: "EquipmentDetail",
+            action: "edit",
+            componentName: "EquipmentEdit",
           },
           {
             class: "fa-solid fa-wrench table-icon",
-            title: "bearbeiten",
+            title: "Wartung erfassen",
             type: "button",
-            action: "showDetail",
+            action: "newReview",
             componentName: "EquipmentReview",
           },
           {
@@ -318,21 +316,39 @@ export default {
   methods: {
     userInputHandler(payload) {
       this.itemId = payload.id;
-      this.$router.push({name: payload.componentName, params: {id: this.itemId}, props: {id: this.itemId}});
-
-    },
-    fabListener(payload) {
       switch (payload.action) {
         case "changeComponent":
-          this.$router.push({name: payload.componentName}); 
+          this.$router.push({ name: payload.componentName });
+          break;
+        case "new":
+          this.$router.push({ name: payload.componentName });
+          break;
+        case "edit":
+          this.$router.push({
+            name: payload.componentName,
+            params: { id: this.itemId },
+            props: { id: this.itemId },
+          });
+          break;
+        case "showDetail":
+          this.$router.push({
+            name: payload.componentName,
+            params: { id: this.itemId },
+            props: { id: this.itemId },
+          });
+          break;
+          case "newReview":
+          this.$router.push({
+            name: payload.componentName,
+            params: { id: this.itemId },
+            props: { id: this.itemId },
+          });
           break;
       }
     },
-    
   },
 
   created() {},
-  
 };
 </script>
 

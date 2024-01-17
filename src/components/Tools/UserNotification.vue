@@ -81,7 +81,6 @@ export default {
       this.iconAsButton = data.iconAsButton;
 
       if (this.timeOut) {
-        console.log("set timeout");
         setTimeout(
           function () {
             this.runAction();

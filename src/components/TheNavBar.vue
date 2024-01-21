@@ -2,7 +2,7 @@
   <div class="navbar-ffp">
     <nav class="navbar navbar-expand-lg">
       <div class="container py-1">
-        <a class="" @click="changeComponent('dashboard')">
+        <a class="" @click="changeComponent('DashboardPage')">
           <img src="@assets/logo.png" class="navbar-img" type="button" />
         </a>
         <div class="collapse navbar-collapse mx-4" id="navbar">

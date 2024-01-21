@@ -1,6 +1,5 @@
 import axios from "axios";
 import firebase from "@/config/firebase";
-import { EventBus } from "@/event-bus";
 
 let timer;
 
@@ -149,17 +148,6 @@ const actions = {
   },
   autoLogOut(context) {
     context.dispatch("logOut");
-    EventBus.emit("notify", {
-      type: "success",
-      title: "Sie wurden abgemeldet",
-      message: "Aufgrund eines Timeouts wurden Sie vom Serviceportal abgemeldet.",
-      subMessage: "Bitte melden Sie sich neu an.",
-      iconAsButton: true,
-      action: "autoLogout",
-      icon: "faIcon fa-solid fa-circle-check",
-      timeOut: false,
-      componentName: "LoginPage",
-    });
   },
 };
 

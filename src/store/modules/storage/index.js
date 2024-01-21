@@ -8,6 +8,7 @@ import {
   getDoc,
   getDocs,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import imageCompression from "browser-image-compression";
 
@@ -84,6 +85,14 @@ const mutations = {
         break;
     }
   },
+  deleteStateDoc(state, payload) {
+    for (let i = 0; i < state.equipments.length; i++) {
+      if (Number(payload.docId) === state.equipments[i].id) {
+        //delete "1" item on index "i", 
+        state.equipments.splice(i, 1);
+      }
+    }
+  },
 };
 
 const actions = {
@@ -101,16 +110,9 @@ const actions = {
       });
 
       /*list all collections (cases) in this switch: */
-      let equipments = [];
       switch (appData[i]) {
         case "equipment":
-          /*filter discarded (ausgeschiedene) equipment from data */
-          for (let i = 0; i < data.length; i++) {
-            if (!data[i].discarded) {
-              equipments.push(data[i]);
-            }
-          }
-          context.commit("setEquipments", equipments);
+          context.commit("setEquipments", data);
           break;
         case "members":
           context.commit("setMembers", data);
@@ -123,7 +125,7 @@ const actions = {
 
   async setData(context, payload) {
     await setDoc(
-      doc(firestore, payload.collection, String(payload.data.id)),
+      doc(firestore, payload.collection, String(payload.id)),
       payload.data
     )
       .then(() => {
@@ -175,12 +177,9 @@ const actions = {
   async updateDocument(context, payload) {
     //updates docs in firestore-collections (used for all data except the itemId (equipmentId))
     const docRef = doc(firestore, payload.collection, String(payload.docId));
-    await updateDoc(docRef, payload.data).then(() => {
-    })
-    .catch((error) => {
+    await updateDoc(docRef, payload.data).catch((error) => {
       console.log(error);
     });
-
   },
 
   async getSingleDocument(context, payload) {
@@ -224,8 +223,7 @@ const actions = {
   fileUpload(context, payload) {
     const storageRef = ref(storage, payload.path);
     uploadBytes(storageRef, payload.file)
-      .then(() => {
-      })
+      .then(() => {})
       .catch((error) => {
         console.log(error);
       });
@@ -245,6 +243,15 @@ const actions = {
           console.log("ERROR: " + error);
         });
     }
+  },
+  async deleteDocument(context, payload) {
+    await deleteDoc(doc(firestore, payload.collection, String(payload.docId)))
+    .then(() => {
+      context.commit("deleteStateDoc", payload);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   },
 };
 

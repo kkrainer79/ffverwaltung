@@ -8,8 +8,12 @@
 
 <script>
 
+
 export default {
   name: "App",
+  components: {
+  },
+  
   computed: {
     token() {
       return this.$store.getters.idToken;

@@ -8,6 +8,7 @@
 
 :root {
   --darkgrey: #212529;
+  --middlegrey:#454545;
   --lightgrey: #dddccb;
   --petrol: #1d7973;
   --darkpetrol: #003f3b;
@@ -55,7 +56,15 @@
   color: #ffffff;
   font-weight: bold;
 }
-
+.btn-yes {
+  background-color: var(--petrol);
+  color: var(--lightgrey);
+  font-weight: bold;
+}
+.btn-yes:hover {
+  background-color: var(--green);
+  color: var(--darkgrey);
+}
 .btn-cancel:hover {
   background-color: var(--red);
 }
@@ -113,13 +122,25 @@
   bottom: 0%;
   transform: translate(-50%, -50%);
 }
+.userNotificationMessage {
+  font-size: 1.2em;
+  margin-bottom: 0.5em;
+}
 .userNotificationSubMessage {
-  font-size: 1.1em;
+  font-size: 0.9em;
   font-weight: 400;
+  margin-bottom: 1em;
 }
 .userNotificationSuccess {
   background-color: var(--green);
   color: var(--darkgrey);
+}
+.userNotificationQuestion {
+  border-color: var(--lightgrey);
+  border-style: solid;
+  border-width: 1px;
+  background-color: var(--middlegrey);
+  color: var(--lightgrey);
 }
 .userNotificationIconAsButton:hover {
   color: var(--orange);
@@ -212,4 +233,16 @@ input::-webkit-inner-spin-button {
 h1 {
   margin-top: 20px;
   margin-bottom: 20px;
+}
+.highlightDiscardedItems {
+  color: var(--lightorange);
+}
+.dot {
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dotText {
+  margin-left: 30px;
 }

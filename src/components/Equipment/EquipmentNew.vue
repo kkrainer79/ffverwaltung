@@ -279,7 +279,7 @@
         </div>
       </div>
     </Form>
-    <UserNotification></UserNotification>
+    <UserNotification :show="this.showNotification" :notificationObj="this.notificationObj"></UserNotification>
   </div>
 </template>
 
@@ -288,7 +288,6 @@ import UserNotification from "../Tools/UserNotification.vue";
 import { Form, Field } from "vee-validate";
 import * as yup from "yup";
 import store from "@store/index.js";
-import { EventBus } from "@/event-bus";
 
 export default {
   name: "EquipmentNew",
@@ -320,6 +319,19 @@ export default {
       newEquipment: {
         maintenanceInterval: 0,
       },
+      notificationObj: {
+        type: "success",
+        title: "test",
+        message: "test",
+        subMessage: "test",
+        action: "close",
+        icon: "",
+        iconAsButton: false,
+        button: false,
+        timeOut: false,
+        componentName: "EquipmentPage",
+      },
+      showNotification: false,
       mode: "new",
     };
   },
@@ -448,31 +460,36 @@ export default {
         dataObject.latestReviewTimeStamp = 0;
         dataObject.nextReviewString = nextReviewObj.nextReviewDisplay;
         dataObject.nextReviewTimeStamp = nextReviewObj.nextReviewTimeStamp;
-        
       }
       //set data for existing equipment
       else {
-        if (values.maintenanceInterval != this.item.maintenanceInterval){
+        console.log("mode = edit");
+        if (values.maintenanceInterval != this.item.maintenanceInterval) {
           //possible cases: existing review(s) vs. no existing review
           //first case: no existing reviews (latestReviewTimeStamp === 0)
           if (this.item.latestReviewTimeStamp === 0) {
-              date = Number(Date.parse(values.purchaseDate));
-              interval = Number(values.maintenanceInterval);
-              nextReviewObj = this.getNextReviewDate(date, interval);
-              dataObject.latestReviewString = "noch nie gewartet";
-              dataObject.latestReviewTimeStamp = 0;
-              dataObject.nextReviewString = nextReviewObj.nextReviewDisplay;
-              dataObject.nextReviewTimestamp = nextReviewObj.nextReviewTimeStamp;
+            date = Number(Date.parse(values.purchaseDate));
+            interval = Number(values.maintenanceInterval);
+            nextReviewObj = this.getNextReviewDate(date, interval);
+            dataObject.latestReviewString = "noch nie gewartet";
+            dataObject.latestReviewTimeStamp = 0;
+            dataObject.nextReviewString = nextReviewObj.nextReviewDisplay;
+            dataObject.nextReviewTimestamp = nextReviewObj.nextReviewTimeStamp;
+          } else {
+            console.log();
+            date = Number(this.item.latestReviewTimeStamp);
+            interval = Number(values.maintenanceInterval);
+            nextReviewObj = this.getNextReviewDate(date, interval);
+            dataObject.latestReviewString = this.item.latestReviewString;
+            dataObject.latestReviewTimeStamp = this.item.latestReviewTimeStamp;
+            dataObject.nextReviewString = nextReviewObj.nextReviewDisplay;
+            dataObject.nextReviewTimeStamp = nextReviewObj.nextReviewTimeStamp;
           }
-              else {
-                date = Number(this.item.latestReviewTimeStamp);
-                interval = Number(values.maintenanceInterval);
-                nextReviewObj = this.getNextReviewDate(date, interval);
-                dataObject.latestReviewString = this.item.latestReviewString;
-                dataObject.latestReviewTimeStamp = this.item.latestReviewTimeStamp;
-                dataObject.nextReviewString = nextReviewObj.nextReviewDisplay;
-                dataObject.nextReviewTimeStamp = nextReviewObj.nextReviewTimeStamp;
-          }
+        } else {
+          dataObject.latestReviewString = this.item.latestReviewString;
+          dataObject.latestReviewTimeStamp = this.item.latestReviewTimeStamp;
+          dataObject.nextReviewString = this.item.nextReviewString;
+          dataObject.nextReviewTimeStamp = this.item.nextReviewTimeStamp;
         }
       }
 
@@ -503,18 +520,22 @@ export default {
           }
           this.message = true;
           this.isLoading = false;
-          EventBus.emit("notify", {
+          this.notificationObj = {
             type: "success",
             title: "Equipment gespeichert",
             message:
               "Die Daten wurden erfolgreich in die Datenbank geschrieben.",
             subMessage: "Sie werden automatisch weitergeleitet.",
             iconAsButton: true,
+            button: false,
             action: "redirect",
             icon: "faIcon fa-solid fa-circle-check",
             timeOut: true,
             componentName: "EquipmentPage",
-          });
+            target: "",
+            id: "",
+          };
+          this.showNotification = true;
         })
         .catch((error) => {
           console.log(error);

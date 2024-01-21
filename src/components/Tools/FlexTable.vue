@@ -170,6 +170,7 @@
       <tbody>
         <tr v-for="item in tableData" :key="item[0].data">
           <td
+            :style="item[0].style"
             @click="
               tableActions(item[0].action, item[0].componentName, item[0].data)
             "
@@ -177,6 +178,7 @@
             {{ item[0].data }}
           </td>
           <td
+            :style="item[1].style"
             @click="
               tableActions(item[1].action, item[1].componentName, item[0].data)
             "
@@ -184,6 +186,7 @@
             {{ item[1].data }}
           </td>
           <td
+            :style="item[2].style"
             @click="
               tableActions(item[2].action, item[2].componentName, item[0].data)
             "
@@ -191,6 +194,7 @@
             {{ item[2].data }}
           </td>
           <td
+            :style="item[3].style"
             @click="
               tableActions(item[3].action, item[3].componentName, item[0].data)
             "
@@ -198,6 +202,7 @@
             {{ item[3].data }}
           </td>
           <td
+            :style="item[4].style"
             @click="
               tableActions(item[4].action, item[4].componentName, item[0].data)
             "
@@ -205,6 +210,7 @@
             {{ item[4].data }}
           </td>
           <td
+            :style="item[5].style"
             @click="
               tableActions(item[5].action, item[5].componentName, item[0].data)
             "
@@ -212,6 +218,7 @@
             {{ item[5].data }}
           </td>
           <td
+            :style="item[6].style"
             @click="
               tableActions(item[6].action, item[6].componentName, item[0].data)
             "
@@ -219,6 +226,7 @@
             {{ item[6].data }}
           </td>
           <td
+            :style="item[7].style"
             class="text-center"
             @click="
               tableActions(item[7].action, item[7].componentName, item[0].data)
@@ -231,6 +239,7 @@
             ></i>
           </td>
           <td
+            :style="item[8].style"
             class="text-center"
             @click="
               tableActions(item[8].action, item[8].componentName, item[0].data)
@@ -243,6 +252,7 @@
             ></i>
           </td>
           <td
+            :style="item[9].style"
             class="text-center"
             @click="
               tableActions(item[9].action, item[9].componentName, item[0].data)
@@ -255,6 +265,7 @@
             ></i>
           </td>
           <td
+            :style="item[10].style"
             class="text-center"
             @click="
               tableActions(
@@ -273,6 +284,11 @@
         </tr>
       </tbody>
     </table>
+    <div v-show="this.showMapLegend">
+      <span class="dot" :style="this.colors[0].style">
+        <span class="dotText">{{ this.colors[0].name }}</span>
+      </span>
+    </div>
   </div>
 </template>
 
@@ -325,6 +341,12 @@ export default {
     tableData: {
       type: Array,
       required: true,
+    },
+    colors: {
+      type: Array,
+    },
+    showMapLegend: {
+      type: Boolean,
     },
   },
 
@@ -514,8 +536,6 @@ export default {
   },
 
   unmounted() {},
-
-  updated() {},
 };
 </script>
 

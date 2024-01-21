@@ -6,7 +6,7 @@
         name="fade"
         mode="out-in"
         appear
-        @userInput="userInputHandler"
+        @user-input="userInputHandler"
       >
         <component
           :is="componentName"
@@ -15,9 +15,15 @@
           :columnTitles="this.columnTitles"
           :defaultFilters="this.filters"
           :tableData="this.setTableData"
+          :colors="this.colors"
+          :showMapLegend="this.showDiscarded"
         ></component>
       </transition>
-      <UserNotification></UserNotification>
+      <UserNotification
+        :show="this.showNotification"
+        :notificationObj="this.notificationObj"
+        @user-input="userInputHandler"
+      ></UserNotification>
       <FloatingActionButton
         v-if="fabActive"
         :fabMenus="fabFunctions"
@@ -55,6 +61,27 @@ export default {
       componentName: "FlexTable",
       itemId: 0,
       action: "",
+      showNotification: false,
+      showDiscarded: false,
+      notificationObj: {
+        type: "success",
+        title: "test",
+        message: "test",
+        subMessage: "test",
+        action: "close",
+        icon: "",
+        iconAsButton: false,
+        button: false,
+        timeOut: false,
+        componentName: "EquipmentPage",
+      },
+      colors: [
+        {
+          name: "ausgeschieden",
+          style:
+            "color: var(--lightorange); background-color: var(--lightorange)",
+        },
+      ],
 
       /* ---START---
       Data for Equipment-Table using FlexTable-Component*/
@@ -186,16 +213,19 @@ export default {
           activeIcon: "fa-solid fa-circle-plus",
           action: "changeComponent",
           componentName: "EquipmentNew",
+          title: "neu",
           itemId: 0,
+          toggleDiscarded: false,
         },
-        /* {
+        {
           id: "subfab1",
           colors: "sub-petrol",
-          icon: "fa-regular fa-circle-pause",
-          action: "edit",
+          icon: "fa-solid fa-recycle",
+          action: "toggleDiscarded",
+          title: "ausgeschiedene anzeigen/ausblenden",
           componentName: "EquipmentNew",
-      },
-      {
+        },
+        /*{
           id: "subfab2",
           colors: "sub-petrol",
           icon: "fa-solid fa-thumbtack",
@@ -231,46 +261,58 @@ export default {
     setTableData() {
       /*data has to be set up in same order as columnTitles
       because of differently named data keys in different stored data. 
-      the child uses the index of the array to show data in table!
+      flexTable-Component uses the index of the array to show data in table!
       */
       let data = [];
       for (let i = 0; i < this.equipments.length; i++) {
+        let discardedStyle = "";
+        if (this.equipments[i].discarded) {
+          discardedStyle = "color: var(--lightorange)";
+        }
+
         let item = [
           /* DATA COLUMNS */
           {
             data: this.equipments[i].id,
             action: "showDetail",
             componentName: "EquipmentDetail",
+            style: discardedStyle,
           },
           {
             data: this.equipments[i].equipmentName,
             action: "showDetail",
             componentName: "EquipmentDetail",
+            style: discardedStyle,
           },
           {
             data: this.equipments[i].manufacturer,
             action: "showDetail",
             componentName: "EquipmentDetail",
+            style: discardedStyle,
           },
           {
             data: this.equipments[i].type,
             action: "showDetail",
             componentName: "EquipmentDetail",
+            style: discardedStyle,
           },
           {
             data: this.equipments[i].equipmentCategory,
             action: "showDetail",
             componentName: "EquipmentDetail",
+            style: discardedStyle,
           },
           {
             data: this.equipments[i].latestReviewString,
             action: "showDetail",
             componentName: "EquipmentDetail",
+            style: discardedStyle,
           },
           {
             data: this.equipments[i].nextReviewString,
             action: "showDetail",
             componentName: "EquipmentDetail",
+            style: discardedStyle,
           },
           /* ICONS */
           {
@@ -279,6 +321,7 @@ export default {
             type: "button",
             action: "edit",
             componentName: "EquipmentEdit",
+            style: discardedStyle,
           },
           {
             class: "fa-solid fa-wrench table-icon",
@@ -286,23 +329,30 @@ export default {
             type: "button",
             action: "newReview",
             componentName: "EquipmentReview",
+            style: discardedStyle,
           },
           {
             class: "fa-solid fa-arrow-right-from-bracket table-icon",
             title: "ausscheiden",
             type: "button",
-            action: "showDetail",
-            componentName: "EquipmentDetail",
+            action: "discard",
+            componentName: "",
+            style: discardedStyle,
           },
           {
             class: "fa-solid fa-trash-can table-icon",
-            title: "ausscheiden",
+            title: "löschen",
             type: "button",
-            action: "showDetail",
-            componentName: "EquipmentDetail",
+            action: "delete",
+            componentName: "",
+            style: discardedStyle,
           },
         ];
-        data.push(item);
+        if (!this.showDiscarded && !this.equipments[i].discarded) {
+          data.push(item);
+        } else if (this.showDiscarded) {
+          data.push(item);
+        }
       }
       return data;
     },
@@ -337,18 +387,93 @@ export default {
             props: { id: this.itemId },
           });
           break;
-          case "newReview":
+        case "newReview":
           this.$router.push({
             name: payload.componentName,
             params: { id: this.itemId },
             props: { id: this.itemId },
           });
           break;
+        case "toggleDiscarded":
+          this.showDiscarded = !this.showDiscarded;
+          break;
+        case "discard":
+          this.notificationObj = {
+            type: "question",
+            title: "Equipment ausscheiden?",
+            message: "Wollen Sie dieses Equipment wirklich ausscheiden?",
+            subMessage:
+              "Es wird dabei nicht aus der Datenbank gelöscht, jedoch in der Equipment-Liste nicht mehr angezeigt.",
+            iconAsButton: false,
+            button: true,
+            action: "close",
+            icon: "",
+            timeOut: false,
+            componentName: "",
+            target: "discard",
+            id: this.itemId,
+          };
+          this.showNotification = true;
+          break;
+          case "delete":
+          this.notificationObj = {
+            type: "question",
+            title: "Equipment löschen?",
+            message: "Wollen Sie dieses Equipment wirklich löschen?",
+            subMessage:
+              "Es wird dabei unwiderbringlich aus der Datenbank gelöscht. Alle Daten gehen dabei verloren!",
+            iconAsButton: false,
+            button: true,
+            action: "close",
+            icon: "",
+            timeOut: false,
+            componentName: "",
+            target: "delete",
+            id: this.itemId,
+          };
+          this.showNotification = true;
+          break;
+        case "userNotification_yes":
+          switch (payload.target) {
+            case "discard":
+              var data = {
+                discarded: true,
+              };
+              var updateObj = {
+                collection: "equipment",
+                docId: payload.id,
+                data: data,
+              };
+              this.$store
+                .dispatch("updateDocument", updateObj)
+                .then(() => {
+                  this.$store.dispatch("getSingleDocument", updateObj);
+                })
+                .then(() => {})
+                .catch((error) => {
+                  console.log(error);
+                });
+                break;
+                case "delete":
+                var deleteObj = {
+                  collection: "equipment",
+                  docId: payload.id,
+                }
+                this.$store.dispatch("deleteDocument", deleteObj);
+                break;
+          }
+          this.showNotification = false;
+          break;
+        case "userNotification_no":
+          this.showNotification = false;
+          break;
       }
     },
   },
 
   created() {},
+  mounted() {},
+  updated() {},
 };
 </script>
 

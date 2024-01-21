@@ -12,20 +12,26 @@
     <div id="subfab2" class="subfab subfab2" :class="fabColors[2]">
       <i :class="fabIcons[2]"></i>
     </div>
-    <div id="subfab1" class="subfab subfab1" :class="fabColors[1]">
+    <div
+      id="subfab1"
+      :title="fabTitles[1]"
+      class="subfab subfab1"
+      :class="fabColors[1]"
+    >
       <i
-        :action="fabActions[1]"
+        :componentName="fabComponentNames[1]"
+        :actions="fabActions[1]"
         :class="fabIcons[1]"
         @click="emitUserInput"
       ></i>
     </div>
     <!-- FLOATING ACTION BUTTON MAIN-FAB -->
-    <div id="floating-button">
+    <div id="floating-button" :title="fabTitles[0]">
       <span class="mainfab-front" :class="fabIcons[0]"></span>
       <span
         class="mainfab-active"
         :componentName="fabComponentNames[0]"
-        :action="fabActions[0]"
+        :actions="fabActions[0]"
         :class="fabMenus[0].activeIcon"
         @click="emitUserInput"
       ></span>
@@ -59,11 +65,11 @@ export default {
       return colors;
     },
     fabActions() {
-      let action = [];
+      let actions = [];
       for (let i = 0; i < this.fabMenus.length; i++) {
-        action.push(this.fabMenus[i].action);
+        actions.push(this.fabMenus[i].action);
       }
-      return action;
+      return actions;
     },
     fabComponentNames() {
       let fabComponentNames = [];
@@ -72,7 +78,14 @@ export default {
       }
       return fabComponentNames;
     },
-/*     fabItemIds(){
+    fabTitles() {
+      let titles = [];
+      for (let i = 0; i < this.fabMenus.length; i++) {
+        titles.push(this.fabMenus[i].title);
+      }
+      return titles;
+    },
+    /*     fabItemIds(){
       let fabItemIds = [];
       for (let i = 0; i< this.fabMenus.length; i++) {
         fabItemIds.push(this.fabMenus[i].itemId);
@@ -83,7 +96,7 @@ export default {
 
   methods: {
     emitUserInput(event) {
-      let action = event.target.attributes.action.value;
+      let action = event.target.attributes.actions.value;
       let componentName = event.target.attributes.componentName.value;
       let payload = {
         action: action,

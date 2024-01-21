@@ -106,7 +106,7 @@
           </div>
         </div>
       </div>
-      <UserNotification></UserNotification>
+      <UserNotification :show="this.showNotification" :notificationObj="this.notificationObj"></UserNotification>
     </div>
   </div>
 </template>
@@ -116,7 +116,6 @@ import store from "@/store/index.js";
 import { Form, Field } from "vee-validate";
 import TheNavBar from "../TheNavBar.vue";
 import UserNotification from "../Tools/UserNotification.vue";
-import { EventBus } from "@/event-bus";
 
 /* import * as yup from "yup"; */
 
@@ -134,7 +133,21 @@ export default {
       timeString: "",
       reviewId: "",
       reviewDate: "",
+      notificationObj: {
+        type: "success",
+        title: "test",
+        message: "test",
+        subMessage: "test",
+        action: "close",
+        icon: "",
+        iconAsButton: false,
+        button: false,
+        timeOut: false,
+        componentName: "EquipmentPage",
+      },
+      showNotification: false,
     };
+    
   },
   components: {
     Form,
@@ -202,7 +215,7 @@ export default {
 
     },
     async saveReview() {
-      let path = `equipment/${this.item[0].id}/reviews`;
+      let path = `equipment/${this.item[0].id}/reviews/`;
       let reviewText = document.getElementById("reviewText").value;
       let dataObj = {
         id: this.reviewId,
@@ -214,6 +227,7 @@ export default {
 
       const reviewPayload = {
         collection: path,
+        id: this.reviewId,
         data: dataObj,
       };
 
@@ -243,18 +257,22 @@ export default {
           this.$store.dispatch("getSingleDocument", updatePayload);
         })
         .then(() => {
-          EventBus.emit("notify", {
+          this.notificationObj = {
             type: "success",
             title: "Wartung gespeichert",
             message:
               "Die Daten wurden erfolgreich in die Datenbank geschrieben.",
             subMessage: "Sie werden automatisch weitergeleitet.",
             iconAsButton: true,
+            button: false,
             action: "redirect",
             icon: "faIcon fa-solid fa-circle-check",
             timeOut: true,
             componentName: "EquipmentPage",
-          });
+            target: "",
+            id: "",
+          };
+          this.showNotification = true;
         })
         .catch((error) => {
           console.log(error);

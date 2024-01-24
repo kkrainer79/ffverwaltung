@@ -86,9 +86,11 @@ const mutations = {
     }
   },
   deleteStateDoc(state, payload) {
+    //this function only deletes the fields in this equipment/id-path.
+    //sub-collections will not be deleted!
     for (let i = 0; i < state.equipments.length; i++) {
       if (Number(payload.docId) === state.equipments[i].id) {
-        //delete "1" item on index "i", 
+        //delete (one) "1" item on index "i", 
         state.equipments.splice(i, 1);
       }
     }

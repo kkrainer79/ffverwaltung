@@ -97,7 +97,9 @@
               :key="option"
               :value="option"
               :name="option"
-            >{{ option }}</option>
+            >
+              {{ option }}
+            </option>
           </Field>
         </div>
       </div>
@@ -389,7 +391,7 @@ export default {
       } else return "EQUIPMENT BEARBEITEN";
     },
     subStorage() {
-      if (this.newEquipment.equipmentCategory === "RFA") {
+      if (this.newEquipment.equipmentCategory === "RFA" || this.newEquipment.equipmentCategory === "TLF" || this.newEquipment.equipmentCategory === "MTF" || this.newEquipment.equipmentCategory === "FWH") {
         return true;
       } else {
         return false;
@@ -398,7 +400,37 @@ export default {
     storageOptions() {
       switch (this.newEquipment.equipmentCategory) {
         case "RFA":
-          return ["Lagerraum 1", "Lagerraum 2"];
+          return [
+            "Geräteraum 1",
+            "Geräteraum 2",
+            "Geräteraum 3",
+            "Geräteraum 4",
+            "Geräteraum 5",
+            "Geräteraum 6",
+            "Geräteraum 7 (Heck)",
+            "Geräteraum 7 (Dach)",
+          ];
+        case "TLF":
+          return [
+            "Geräteraum 1",
+            "Geräteraum 2",
+            "Geräteraum 3",
+            "Geräteraum 4",
+            "Geräteraum 5",
+            "Geräteraum 6",
+            "Geräteraum 7 (Heck)",
+            "Geräteraum 7 (Dach)",
+          ];
+        case "MTF":
+          return ["Mannschaftsraum", "Geräteraum 1 (Heck)"];
+        case "FWH":
+          return [
+            "Heizraum",
+            "Bootsgarage",
+            "Lager",
+            "Werkstatt (Busgarage)",
+            "Atemschutzwerkstatt",
+          ];
         default:
           return "";
       }

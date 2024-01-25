@@ -79,6 +79,28 @@
           </Field>
         </div>
       </div>
+      <div class="row mt-3" v-if="this.subStorage">
+        <div class="col-lg-3 col-sm-6 col-xs-12"></div>
+        <div class="col-lg-3 col-sm-6 col-xs-12">
+          <label for="equipmentCategory">Lagerort</label>
+          <Field
+            as="select"
+            name="storageLocation"
+            class="form-control"
+            id="storageLocation"
+            :value="this.newEquipment.storageLocation"
+            @change="getCategory"
+          >
+            <option value="" disabled>Bitte wählen</option>
+            <option
+              v-for="option in storageOptions"
+              :key="option"
+              :value="option"
+              :name="option"
+            >{{ option }}</option>
+          </Field>
+        </div>
+      </div>
 
       <div class="row mt-3">
         <div class="col-lg-3 col-sm-6 col-xs-12">
@@ -366,6 +388,21 @@ export default {
         return "EQUIPMENT ANLEGEN";
       } else return "EQUIPMENT BEARBEITEN";
     },
+    subStorage() {
+      if (this.newEquipment.equipmentCategory === "RFA") {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    storageOptions() {
+      switch (this.newEquipment.equipmentCategory) {
+        case "RFA":
+          return ["Lagerraum 1", "Lagerraum 2"];
+        default:
+          return "";
+      }
+    },
   },
 
   methods: {
@@ -420,7 +457,6 @@ export default {
         this.$store.dispatch("fileUpload", invoiceObj);
       }
       //set data for manual
-      console.log(values.documentFile);
       if (values.documentFile) {
         for (let i = 0; i < values.documentFile.length; i++) {
           this.fileType = "documents";
@@ -442,7 +478,6 @@ export default {
             url: documentPath,
           });
         }
-
       }
       //set dataObject
       const dataObject = {
@@ -450,6 +485,7 @@ export default {
         manufacturer: values.manufacturer,
         type: values.type,
         equipmentCategory: values.equipmentCategory,
+        storageLocation: values.storageLocation,
         purchaseDate: values.purchaseDate,
         purchasePrice: values.purchasePrice,
         serviceLife: values.serviceLife,

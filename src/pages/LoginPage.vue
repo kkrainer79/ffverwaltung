@@ -22,9 +22,6 @@
             <div class="row">
               <div class="fs-3 mb-5">der Feuerwehr Preding</div>
             </div>
-            <div class="row mt-2">
-              <div class="my-3">Bitte authentifizieren:</div>
-            </div>
           </div>
 
           <Form
@@ -32,8 +29,8 @@
             @submit="submitData"
             :validation-schema="schema"
           >
-            <div class="form-row">
-              <div class="form-group col-2 offset-5">
+            <div class="form-row d-flex align-items-center justify-content-center">
+              <div class="form-group col-lg-2 col-md-4 col-sm-6 col-xs-10">
                 <label for="email">Benutzer</label>
                 <Field
                   as="input"
@@ -47,8 +44,8 @@
             }}</small> -->
               </div>
             </div>
-            <div class="form-row">
-              <div class="form-group col-2 offset-5 mt-2">
+            <div class="form-row d-flex align-items-center justify-content-center">
+              <div class="form-group col-lg-2 col-md-4 col-sm-6 col-xs-10 mt-2">
                 <label for="password">Passwort </label>
                 <Field
                   as="input"
@@ -62,8 +59,8 @@
             </small> -->
               </div>
             </div>
-            <div class="form-row">
-              <div class="form-group col-2 offset-5 mt-2">
+            <div class="form-row d-flex align-items-center justify-content-center">
+              <div class="form-group col-lg-2 col-md-4 col-sm-6 col-xs-10 mt-2">
                 <input
                   type="checkbox"
                   class="mr-2"
@@ -77,9 +74,9 @@
                 >
               </div>
             </div>
-            <div class="form-row mt-3">
-              <div class="form-group col-md-8 offset-2">
-                <div class="d-grid col-2 offset-5">
+            <div class="form-row mt-4 d-flex align-items-center justify-content-center">
+              <div class="form-group col-lg-2 col-md-4 col-sm-6 col-xs-10">
+                <div class="d-grid">
                   <button class="btn btn-ffp">
                     <span v-if="!isLoading">Login</span>
                     <span
@@ -94,7 +91,7 @@
               </div>
             </div>
           </Form>
-          <div class="copyright col-10 offset-1">
+          <div class=".align-text-bottom col-10 offset-1">
             <small>&copy; LM d.V. Klaus Krainer, MSc | FF Preding</small>
           </div>
         </div>
@@ -141,16 +138,6 @@ export default {
   },
 
   computed: {
-    screenSize() {
-      if (window.screen.width >= 792) {
-        console.log("Screensize: Desktop");
-        return 0;
-      } else if (window.screen.width < 792 && window.screen.width >= 448) {
-        console.log("Screensize: Tablet");
-        return 1;
-      } else console.log("Screensize: Smartphone");
-      return 2;
-    },
     errorText() {
       if (this.error) {
         return "Benutzername und/oder Passwort falsch!";

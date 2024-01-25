@@ -72,16 +72,20 @@
                   <div class="col-6">
                     <label class="detail-label">RECHNUNG</label>
                     <p v-if="item.invoice !== ''">
-                      <a :href="this.getInvoice" target="_blank">Download</a>
+                      <a :href="this.getInvoice" target="_blank" rel="noopener noreferrer">Download</a>
                     </p>
                     <p v-else>Keine Daten vorhanden!</p>
                   </div>
-                  <div class="col-6">
-                    <label class="detail-label">BESCHREIBUNG</label>
-                    <p v-if="item.manual !== ''">
-                      <a :href="this.getManual" target="_blank">Download</a>
+                  <div class="col-6" v-if="item.documents !== ''">
+                    <label class="detail-label">DOKUMENTE</label>
+                    <p v-for="file in this.fileArray" :key="file.url">
+                      <a :href="file.url" target="_blank" rel="noopener noreferrer"
+                        >{{file.name}}</a
+                      >
                     </p>
-                    <p v-else>Keine Daten vorhanden!</p>
+                  </div>
+                  <div v-else>
+                    <p>Keine Daten vorhanden!</p>
                   </div>
                 </div>
               </div>
@@ -135,7 +139,8 @@ export default {
       equipments: store.getters.equipments,
       imgagePath: "",
       invoicePath: "",
-      manualPath: "",
+      documents: [],
+      downloadURLs: store.getters.downloadURLs,
       placeholder:
         "https://fakeimg.pl/600x400/1a1a1a/ebebeb?text=Kein+Bild+vorhanden",
       showReview: false,
@@ -187,7 +192,6 @@ export default {
     };
   },
 
-
   computed: {
     item() {
       let item = {};
@@ -216,13 +220,21 @@ export default {
         return invoice;
       } else return "";
     },
-
-    getManual() {
-      if (this.manualPath !== "") {
-        let manual = store.getters.manualUrl;
-        return manual;
-      } else return "";
+    fileArray () {
+      let fileArray = [];
+      for (let i = 0; i < this.downloadURLs.length; i++) {
+        let firstChar = this.documents[i].name.charAt(0).toUpperCase();
+        let otherChars = this.documents[i].name.toLowerCase();
+        let name = `${firstChar}${otherChars.slice(1)}`;
+        let item = {
+          name: name,
+          url: this.downloadURLs[i]
+        };
+        fileArray.push(item);
+      }
+      return fileArray;
     },
+
     maintenanceInterval() {
       switch (this.item.maintenanceInterval) {
         case "2628000000":
@@ -263,7 +275,7 @@ export default {
       if (this.equipments[i].id === this.itemId) {
         this.imagePath = this.equipments[i].equipmentImage;
         this.invoicePath = this.equipments[i].invoice;
-        this.manualPath = this.equipments[i].manual;
+        this.documents = this.equipments[i].documents;
       }
     }
 
@@ -275,12 +287,14 @@ export default {
       this.$store.dispatch("fileDownload", payload);
     }
 
-    if (this.manualPath !== "") {
-      let payload = {
-        path: this.manualPath,
-        type: "manual",
-      };
-      this.$store.dispatch("fileDownload", payload);
+    if (this.documents !== "") {
+      for (let i = 0; i < this.documents.length; i++) {
+        let payload = {
+          path: this.documents[i].url,
+          type: "documents",
+        };
+        this.$store.dispatch("fileDownload", payload);
+      }
     }
 
     if (this.imagePath !== "") {
@@ -297,6 +311,7 @@ export default {
   unmounted() {
     this.img = "";
     this.$store.dispatch("updateImgUrl", "");
+    this.$store.dispatch("resetFileUrl");
   },
 };
 </script>

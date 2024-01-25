@@ -22,7 +22,7 @@ const state = {
   singleDocument: {},
   imageUrl: "",
   invoiceUrl: "",
-  manualUrl: "",
+  downloadURLs: [],
 };
 
 const getters = {
@@ -30,7 +30,7 @@ const getters = {
   equipments: (state) => state.equipments,
   imageUrl: (state) => state.imageUrl,
   invoiceUrl: (state) => state.invoiceUrl,
-  manualUrl: (state) => state.manualUrl,
+  downloadURLs: (state) => state.downloadURLs,
 };
 
 const mutations = {
@@ -78,19 +78,23 @@ const mutations = {
       case "invoice":
         state.invoiceUrl = payload.url;
         break;
-      case "manual":
-        state.manualUrl = payload.url;
+      case "documents":
+        state.downloadURLs.push(payload.url);
         break;
       default:
         break;
     }
   },
+  resetFileUrl(state) {
+    state.downloadURLs = [];
+  },
+
   deleteStateDoc(state, payload) {
     //this function only deletes the fields in this equipment/id-path.
     //sub-collections will not be deleted!
     for (let i = 0; i < state.equipments.length; i++) {
       if (Number(payload.docId) === state.equipments[i].id) {
-        //delete (one) "1" item on index "i", 
+        //delete (one) "1" item on index "i",
         state.equipments.splice(i, 1);
       }
     }
@@ -204,6 +208,9 @@ const actions = {
   updateImgUrl(context, payload) {
     context.commit("setFileUrl", payload);
   },
+  resetFileUrl(context) {
+    context.commit("resetFileUrl");
+  },
 
   compressImage(context, fileObject) {
     //Tutorial: https://www.npmjs.com/package/browser-image-compression
@@ -248,12 +255,12 @@ const actions = {
   },
   async deleteDocument(context, payload) {
     await deleteDoc(doc(firestore, payload.collection, String(payload.docId)))
-    .then(() => {
-      context.commit("deleteStateDoc", payload);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .then(() => {
+        context.commit("deleteStateDoc", payload);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 };
 

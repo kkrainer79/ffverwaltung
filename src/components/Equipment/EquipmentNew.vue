@@ -198,13 +198,14 @@
             }}</small> -->
         </div>
         <div class="col-lg-3 col-sm-6 col-xs-12">
-          <label for="manualFile">Bedienungsanleitung</label>
+          <label for="manualFile">zusätzliche Dokumente</label>
           <Field
+            multiple
             as="input"
-            name="manualFile"
+            name="documentFile"
             type="file"
             class="form-control"
-            id="manualFile"
+            id="documentFile"
             accept=".pdf, .doc"
           />
           <!-- <small class="text-danger" v-if="errors.email">{{
@@ -279,7 +280,10 @@
         </div>
       </div>
     </Form>
-    <UserNotification :show="this.showNotification" :notificationObj="this.notificationObj"></UserNotification>
+    <UserNotification
+      :show="this.showNotification"
+      :notificationObj="this.notificationObj"
+    ></UserNotification>
   </div>
 </template>
 
@@ -313,6 +317,7 @@ export default {
       schema,
       isLoading: false,
       fileType: "",
+      fileName: "",
       message: false,
       purchaseDate: "",
       maintenanceInterval: "",
@@ -379,14 +384,17 @@ export default {
       this.maintenanceInterval = values.maintenanceInterval;
       let imagePath = "";
       let invoicePath = "";
-      let manualPath = "";
+      let documentPath = "";
+      let documentsData = [];
 
       //set data for image
       if (values.equipmentImageFile) {
         this.fileType = "image";
+        this.fileName = "image";
         imagePath = this.getPath(
           values.equipmentImageFile,
           this.fileType,
+          this.fileName,
           values.equipmentId
         );
         const imgObject = {
@@ -398,9 +406,11 @@ export default {
       //set data for invoice
       if (values.invoiceFile) {
         this.fileType = "invoice";
+        this.fileName = `invoice`;
         invoicePath = this.getPath(
           values.invoiceFile,
           this.fileType,
+          this.fileName,
           values.equipmentId
         );
         const invoiceObj = {
@@ -410,18 +420,29 @@ export default {
         this.$store.dispatch("fileUpload", invoiceObj);
       }
       //set data for manual
-      if (values.manualFile) {
-        this.fileType = "manual";
-        manualPath = this.getPath(
-          values.manualFile,
-          this.fileType,
-          values.equipmentId
-        );
-        const manualObj = {
-          path: manualPath,
-          file: values.manualFile,
-        };
-        this.$store.dispatch("fileUpload", manualObj);
+      console.log(values.documentFile);
+      if (values.documentFile) {
+        for (let i = 0; i < values.documentFile.length; i++) {
+          this.fileType = "documents";
+          this.fileName = `doc${i + 1}`;
+          documentPath = this.getPath(
+            values.documentFile[i],
+            this.fileType,
+            this.fileName,
+            values.equipmentId
+          );
+          const documentObj = {
+            path: documentPath,
+            file: values.documentFile[i],
+          };
+          this.$store.dispatch("fileUpload", documentObj);
+
+          documentsData.push({
+            name: values.documentFile[i].name,
+            url: documentPath,
+          });
+        }
+
       }
       //set dataObject
       const dataObject = {
@@ -434,7 +455,7 @@ export default {
         serviceLife: values.serviceLife,
         maintenanceInterval: values.maintenanceInterval,
         invoice: invoicePath,
-        manual: manualPath,
+        documents: documentsData,
         equipmentImage: imagePath,
         id: values.equipmentId,
         dealer: values.dealer,
@@ -463,7 +484,6 @@ export default {
       }
       //set data for existing equipment
       else {
-        console.log("mode = edit");
         if (values.maintenanceInterval != this.item.maintenanceInterval) {
           //possible cases: existing review(s) vs. no existing review
           //first case: no existing reviews (latestReviewTimeStamp === 0)
@@ -476,7 +496,6 @@ export default {
             dataObject.nextReviewString = nextReviewObj.nextReviewDisplay;
             dataObject.nextReviewTimestamp = nextReviewObj.nextReviewTimeStamp;
           } else {
-            console.log();
             date = Number(this.item.latestReviewTimeStamp);
             interval = Number(values.maintenanceInterval);
             nextReviewObj = this.getNextReviewDate(date, interval);
@@ -562,12 +581,12 @@ export default {
       return returnObj;
     },
 
-    getPath(file, fileType, id) {
+    getPath(file, fileType, fileName, id) {
       const dataType = file.name.substring(
         file.name.length - 3,
         file.name.length
       );
-      const path = `equipment/${fileType}/${fileType}-${id}.${dataType}`;
+      const path = `equipment/${fileType}/${id}_${fileName}.${dataType}`;
       return path;
     },
 

@@ -11,7 +11,7 @@
     >
       <!-- :key="this.equipmentCategory" -->
       <div class="row">
-        <div class="col-lg-3 col-sm-6 col-xs-12">
+        <div class="col-lg-3 col-sm-6 col-xs-10">
           <label for="equipmentName">Bezeichnung*</label>
           <Field
             as="input"
@@ -26,7 +26,7 @@
             errors.equipmentName
           }}</small>
         </div>
-        <div class="col-lg-3 col-sm-6 col-xs-12">
+        <div class="col-lg-3 col-sm-6 col-xs-10">
           <label for="manufacturer">Hersteller/Marke*</label>
           <Field
             as="input"
@@ -279,27 +279,27 @@
           </Field>
         </div>
       </div>
-      <div class="row mt-5">
-        <div class="form-group col-lg-2">
-          <div class="d-grid">
+      <div class="row mt-4">
+        <div class="col-lg-6 d-flex align-items-center justify-content-center">
+          <div class="col d-grid">
             <button
               type="button"
               v-if="!message"
               class="btn btn-cancel"
               @click="cancelNewEquipment"
             >
-              Abbrechen
+              <span> Abbrechen </span>
             </button>
           </div>
-        </div>
-        <div class="form-group col-lg-2 offset-2">
-          <div class="d-grid">
+          <div class="col"></div>
+          <div class="col d-grid">
             <button class="btn btn-ffp" v-if="!message">
               <span>Speichern</span>
             </button>
-          </div>
-          <div class="col-10 offset-1 text-danger text-center mt-2">
-            <!-- <small v-if="error">{{ errorText }}</small> -->
+
+            <div class="col-10 offset-1 text-danger text-center mt-2">
+              <!-- <small v-if="error">{{ errorText }}</small> -->
+            </div>
           </div>
         </div>
       </div>
@@ -376,6 +376,14 @@ export default {
       let label = `${this.equipmentCategory}-${this.id}`;
       return label;
     },
+    redirectComponent() {
+      if (screen.width < 992) {
+        return "DashboardPage";
+      } else {
+        return "EquipmentPage";
+      }
+    },
+
     item() {
       let item;
       for (let i = 0; i < this.equipments.length; i++) {
@@ -391,7 +399,12 @@ export default {
       } else return "EQUIPMENT BEARBEITEN";
     },
     subStorage() {
-      if (this.newEquipment.equipmentCategory === "RFA" || this.newEquipment.equipmentCategory === "TLF" || this.newEquipment.equipmentCategory === "MTF" || this.newEquipment.equipmentCategory === "FWH") {
+      if (
+        this.newEquipment.equipmentCategory === "RFA" ||
+        this.newEquipment.equipmentCategory === "TLF" ||
+        this.newEquipment.equipmentCategory === "MTF" ||
+        this.newEquipment.equipmentCategory === "FWH"
+      ) {
         return true;
       } else {
         return false;
@@ -618,7 +631,7 @@ export default {
             action: "redirect",
             icon: "faIcon fa-solid fa-circle-check",
             timeOut: true,
-            componentName: "EquipmentPage",
+            componentName: this.redirectComponent,
             target: "",
             id: "",
           };
@@ -662,7 +675,7 @@ export default {
       this.message = true;
     },
     cancelNewEquipment() {
-      this.$router.push({ name: "EquipmentPage" });
+      this.$router.push({ name: this.redirectComponent });
     },
   },
 

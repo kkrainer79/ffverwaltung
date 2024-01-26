@@ -2,13 +2,14 @@
   <div class="container-flex">
     <the-nav-bar @changeComponent="changeComponent"></the-nav-bar>
     <div class="container">
-      <div>
+      <div class="d-flex align-items-center justify-content-center">
         <h1>EQUIPMENT-WARTUNG</h1>
       </div>
-      <Form>
-        <div class="container">
-          <div class="row">
-            <div class="col-3">
+
+      <div class="container">
+        <Form>
+          <div class="row d-flex align-items-center justify-content-center">
+            <div class="col-6">
               <div class="input-group mt-3">
                 <Field
                   as="input"
@@ -35,12 +36,11 @@
               </div>
             </div>
           </div>
-        </div>
-      </Form>
-
+        </Form>
+      </div>
       <div class="container mt-4" v-if="itemFound">
-        <div class="row">
-          <div class="col-3">
+        <div class="row d-flex align-items-center justify-content-center">
+          <div class="col-10">
             <div class="card">
               <div class="card-header review-card-header">
                 {{ this.item[0].equipmentName }}
@@ -51,62 +51,63 @@
                   {{ this.item[0].type }}
                 </span>
                 <div>
-                  {{ this.item[0].equipmentCategory }}
+                  {{ this.item[0].label }}
                 </div>
               </div>
             </div>
           </div>
-          <div class="row mt-5">
-            <div class="col-3">
-              <div class="card">
-                <div class="card-header review-capture-card">
-                  WARTUNG ERFASSEN
-                </div>
-                <div class="card-body">
-                  <Form>
-                    <div class="container">
-                      <div class="row">
-                        <div class="col-12">
-                          <Field
-                            as="textarea"
-                            name="review"
-                            type="text"
-                            class="form-control review-textarea"
-                            id="reviewText"
-                            placeholder="Anmerkungen..."
-                          >
-                          </Field>
-                        </div>
+        </div>
+        <div class="row mt-5 d-flex align-items-center justify-content-center">
+          <div class="col-10">
+            <div class="card">
+              <div class="card-header review-capture-card">
+                WARTUNG ERFASSEN
+              </div>
+              <div class="card-body">
+                <Form>
+                  <div class="container">
+                    <div class="row">
+                      <div class="col-12">
+                        <Field
+                          as="textarea"
+                          name="review"
+                          type="text"
+                          class="form-control review-textarea"
+                          id="reviewText"
+                          placeholder="Anmerkungen..."
+                        >
+                        </Field>
                       </div>
                     </div>
-                  </Form>
-                </div>
-                <span class="card-footer">{{ this.displayedTime }}</span>
+                  </div>
+                </Form>
               </div>
+              <span class="card-footer">{{ this.displayedTime }}</span>
             </div>
           </div>
         </div>
       </div>
 
       <div class="container">
-        <div v-if="itemFound" class="row mt-4">
-          <div class="col-3">
+        <div class="row mt-4">
+          <div class="col-1"></div>
+          <div class="col">
             <div class="d-grid">
-              <button class="btn btn-ffp" @click="saveReview">Speichern</button>
+              <button class="btn btn-cancel" @click="cancelReview">Abbrechen</button>
             </div>
           </div>
-        </div>
-        <div class="row mt-3">
-          <div class="col-3">
+          <div class="col">
             <div class="d-grid">
-              <button class="btn btn-cancel" @click="cancelReview">
-                Abbrechen
-              </button>
+              <button id="saveBtn" class="btn btn-ffp" @click="saveReview">Speichern</button>
             </div>
           </div>
+          <div class="col-1"></div>
         </div>
       </div>
-      <UserNotification :show="this.showNotification" :notificationObj="this.notificationObj"></UserNotification>
+      <UserNotification
+        :show="this.showNotification"
+        :notificationObj="this.notificationObj"
+      ></UserNotification>
     </div>
   </div>
 </template>
@@ -147,7 +148,6 @@ export default {
       },
       showNotification: false,
     };
-    
   },
   components: {
     Form,
@@ -159,10 +159,19 @@ export default {
     itemId: Number,
   }, */
 
-  computed: {},
+  computed: {
+    redirectComponent() {
+      if (screen.width < 992) {
+        return "DashboardPage";
+      } else {
+        return "EquipmentPage";
+      }
+    },
+  },
   methods: {
     findEquipment() {
       this.itemFound = false;
+      document.getElementById("saveBtn").disabled = true;
       this.item = [];
       for (let i = 0; i < this.equipments.length; i++) {
         if (this.equipments[i].id === this.searchId) {
@@ -170,6 +179,7 @@ export default {
         }
       }
       if (this.item.length > 0) {
+        document.getElementById("saveBtn").disabled = false;
         this.itemFound = true;
         this.getTimeStamp();
       }
@@ -179,7 +189,6 @@ export default {
       let date = String with date from "now" */
       this.timeStamp = new Date().getTime();
       let date = new Date(this.timeStamp);
-
 
       //set options for this.displayedTime (shown on card-footer)
       let options = {
@@ -193,7 +202,7 @@ export default {
       };
       this.displayedTime = date.toLocaleString("de-AT", options);
 
-      //set options for reviewId & 
+      //set options for reviewId &
       options = {
         year: "numeric",
         month: "long",
@@ -208,11 +217,10 @@ export default {
       let year = String(date.getFullYear());
       let hour = ("0" + date.getHours()).slice(-2);
       let minutes = ("0" + date.getMinutes()).slice(-2);
-      let seconds = ("0" + date.getSeconds()).slice(-2); 
+      let seconds = ("0" + date.getSeconds()).slice(-2);
 
       this.reviewId = `${this.item[0].id}${year}${month}${day}${hour}${minutes}${seconds}`;
       this.reviewDate = `${year}-${month}-${day}`;
-
     },
     async saveReview() {
       let path = `equipment/${this.item[0].id}/reviews/`;
@@ -237,16 +245,16 @@ export default {
       );
 
       let updateObj = {
-            latestReviewString: this.reviewDate,
-            latestReviewTimeStamp: this.timeStamp,
-            nextReviewString: nextReviewData.nextReviewString,
-            nextReviewTimeStamp: nextReviewData.nextReviewTimeStamp,
-          };
-          let updatePayload = {
-            collection: "equipment",
-            docId: this.item[0].id,
-            data: updateObj,
-          };
+        latestReviewString: this.reviewDate,
+        latestReviewTimeStamp: this.timeStamp,
+        nextReviewString: nextReviewData.nextReviewString,
+        nextReviewTimeStamp: nextReviewData.nextReviewTimeStamp,
+      };
+      let updatePayload = {
+        collection: "equipment",
+        docId: this.item[0].id,
+        data: updateObj,
+      };
 
       await this.$store
         .dispatch("setData", reviewPayload)
@@ -268,7 +276,7 @@ export default {
             action: "redirect",
             icon: "faIcon fa-solid fa-circle-check",
             timeOut: true,
-            componentName: "EquipmentPage",
+            componentName: this.redirectComponent,
             target: "",
             id: "",
           };
@@ -303,8 +311,10 @@ export default {
   created() {},
 
   mounted() {
-    this.searchId = Number(this.$route.params.id);
-    this.findEquipment();
+    if (this.$route.params.id) {
+      this.searchId = Number(this.$route.params.id);
+      this.findEquipment();
+    }
   },
 };
 </script>

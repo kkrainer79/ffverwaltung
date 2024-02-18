@@ -8,7 +8,7 @@
 
 :root {
   --darkgrey: #212529;
-  --middlegrey:#454545;
+  --middlegrey: #454545;
   --lightgrey: #dddccb;
   --petrol: #1d7973;
   --darkpetrol: #003f3b;
@@ -31,6 +31,15 @@
   justify-content: center;
   align-items: center;
   max-width: 400px;
+}
+.btn-define {
+  font-weight: 700;
+  color: var(--darkgrey);
+  background-color: var(--lightorange);
+}
+.btn-define:hover {
+  background-color: var(--lightgrey);
+  color: var(--orange);
 }
 .btn-logout {
   font-weight: 700;
@@ -97,7 +106,7 @@
   color: var(--darkgrey);
 }
 .userNotification {
-  height: 35%;
+  min-height: 35%;
   width: 45%;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   font-size: 1.3em;
@@ -117,7 +126,7 @@
   margin-bottom: 0.5em;
 }
 .userNotificationIcon {
-  position: absolute;
+  position: relative;
   left: 50%;
   bottom: 0%;
   transform: translate(-50%, -50%);
@@ -142,8 +151,18 @@
   background-color: var(--middlegrey);
   color: var(--lightgrey);
 }
-.userNotificationIconAsButton:hover {
+.userNotificationIconAsButton {
   color: var(--orange);
+
+}
+.userNotificationIconAsButton:hover {
+  color: var(--green);
+}
+.userNotificationIconCancel {
+  color: var(--orange);
+}
+.userNotificationIconCancel:hover {
+  color: var(--red);
 }
 
 .fa-solid,
@@ -219,14 +238,27 @@ input::-webkit-inner-spin-button {
   color: var(--darkgrey);
 }
 
+.reviewDone {
+  background-color: var(--green);
+  color: var(--darkgrey);
+  font-weight: 500;
+  border-style: solid;
+  border-color: var(--darkgrey);
+  border-width: 0.5px;
+}
+
+.reviewHeadIconDone {
+  font-size: 24px;
+  padding-left: 10px;
+}
+.hideReviewType {
+  display: none;
+}
+
 .review-textarea {
   height: 10em;
 }
-.review-capture-card {
-  background-color: var(--orange);
-  color: var(--lightgrey);
-  font-weight: 700;
-}
+
 .table-icon:hover {
   color: var(--orange);
 }
@@ -245,4 +277,47 @@ h1 {
 }
 .dotText {
   margin-left: 30px;
+}
+.equipmentNewSectionHeader {
+  font-weight: 800;
+  font-size: larger;
+}
+
+
+
+details{
+  color: #fff;
+}
+
+summary {
+  background-color: var(--petrol);
+  color: var(--darkgrey);
+  font-weight: 700;
+  padding: .5em 1.3rem;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;  
+  transition: height 1s ease;
+  border-radius: 5px;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+summary:after{
+  font-weight: 800;
+  font-size: 24px;
+  content: "\002B";
+}
+
+details[open] summary {
+}
+
+details[open] summary:after{
+  content: "\00D7";
+}
+
+details[open] div{
+
 }

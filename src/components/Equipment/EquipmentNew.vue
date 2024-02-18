@@ -10,6 +10,8 @@
       :key="this.newEquipment.equipmentCategory"
     >
       <!-- :key="this.equipmentCategory" -->
+
+      <h4>BASISDATEN</h4>
       <div class="row">
         <div class="col-lg-3 col-sm-6 col-xs-10">
           <label for="equipmentName">Bezeichnung*</label>
@@ -41,8 +43,6 @@
               errors.email
             }}</small> -->
         </div>
-      </div>
-      <div class="row mt-3">
         <div class="col-lg-3 col-sm-6 col-xs-12">
           <label for="type">Typenbezeichnung</label>
           <Field
@@ -58,6 +58,25 @@
               errors.email
             }}</small> -->
         </div>
+        <div class="col-lg-3 col-sm-6 col-xs-12">
+          <label for="type">Herstellungsjahr</label>
+          <Field
+            as="input"
+            name="manufacturingYear"
+            type="number"
+            class="form-control"
+            id="type"
+            :value="this.newEquipment.type"
+            @change="saveInputData"
+          />
+          <!-- <small class="text-danger" v-if="errors.email">{{
+              errors.email
+            }}</small> -->
+        </div>
+      </div>
+
+      <div class="row mt-3"></div>
+      <div class="row">
         <div class="col-lg-3 col-sm-6 col-xs-12">
           <label for="equipmentCategory">Kategorie*</label>
           <Field
@@ -78,10 +97,7 @@
             <option value="SON" name="Sonstige">Sonstige</option>
           </Field>
         </div>
-      </div>
-      <div class="row mt-3" v-if="this.subStorage">
-        <div class="col-lg-3 col-sm-6 col-xs-12"></div>
-        <div class="col-lg-3 col-sm-6 col-xs-12">
+        <div v-if="this.subStorage" class="col-lg-3 col-sm-6 col-xs-12">
           <label for="equipmentCategory">Lagerort</label>
           <Field
             as="select"
@@ -103,8 +119,8 @@
           </Field>
         </div>
       </div>
-
-      <div class="row mt-3">
+      <h4 class="mt-5">LIEFERANT</h4>
+      <div class="row">
         <div class="col-lg-3 col-sm-6 col-xs-12">
           <label for="dealer">Händler</label>
           <Field
@@ -135,7 +151,7 @@
             }}</small> -->
         </div>
       </div>
-
+      <h4 class="mt-5">INSTANDHALTUNG</h4>
       <div class="row mt-3">
         <div class="col-lg-2 col-md-3">
           <label for="purchaseDate">Einführungsdatum*</label>
@@ -184,9 +200,34 @@
             errors.serviceLife
           }}</small>
         </div>
-        <div class="col-lg-2 col-md-5">
-          <label for="mainentanceInterval">Wartungsintervall</label>
+        <div class="col-lg-4 col-md-5 d-grid">
+          <label for="mainentanceCategory">ÖBFV-Wartungskategorie</label>
           <Field
+            as="select"
+            name="maintenanceCategory"
+            class="form-control"
+            id="maintenanceCategory"
+            :value="this.newEquipment.maintenanceCategory"
+            @change="saveInputData"
+          >
+            <option value="" disabled>Bitte wählen</option>
+            <option
+              v-for="option in this.reviewCategories"
+              :value="option.categoryName"
+              :name="option.categoryName"
+              :key="option.categoryName"
+            >
+              {{ option.categoryDisplayName }}
+            </option>
+          </Field>
+          <!-- <button
+            class="btn btn-define"
+            type="button"
+            @click="maintenanceSchedule"
+          >
+            Wartungsplan
+          </button> -->
+          <!-- <Field
             as="select"
             name="maintenanceInterval"
             class="form-control"
@@ -194,20 +235,67 @@
             :value="this.newEquipment.maintenanceInterval"
             @change="saveInputData"
           >
-            <!-- option values in milliseconds! -->
+            option values in milliseconds! 
             <option value="0" selected>bei Bedarf</option>
             <option value="2628000000">monatlich</option>
             <option value="7884000000">vierteljährlich</option>
             <option value="15768000000">halbjährlich</option>
             <option value="31536000000">jährlich</option>
+          </Field> -->
+          <!-- <small class="text-danger" v-if="errors.email">{{
+              errors.email
+            }}</small> -->
+        </div>
+        <div v-if="showMaintenanceSpecification" class="col-lg-4 col-md-5 d-grid">
+          <label for="mainentanceSpecification">Wartungsplan</label>
+          <Field
+            as="select"
+            name="maintenanceSpecification"
+            class="form-control"
+            id="maintenanceSpecification"
+            :value="this.newEquipment.maintenanceSpecification"
+            @change="saveInputData"
+          >
+            <option value="" disabled>Bitte wählen</option>
+            <option
+              v-for="option in maintenanceOptions"
+              :value="option.reviewScheduleId"
+              :name="option.name"
+              :key="option.reviewScheduleId"
+            >
+              {{ option.name }}
+            </option>
           </Field>
+          <!-- <button
+            class="btn btn-define"
+            type="button"
+            @click="maintenanceSchedule"
+          >
+            Wartungsplan
+          </button> -->
+          <!-- <Field
+            as="select"
+            name="maintenanceInterval"
+            class="form-control"
+            id="maintenanceInterval"
+            :value="this.newEquipment.maintenanceInterval"
+            @change="saveInputData"
+          >
+            option values in milliseconds! 
+            <option value="0" selected>bei Bedarf</option>
+            <option value="2628000000">monatlich</option>
+            <option value="7884000000">vierteljährlich</option>
+            <option value="15768000000">halbjährlich</option>
+            <option value="31536000000">jährlich</option>
+          </Field> -->
           <!-- <small class="text-danger" v-if="errors.email">{{
               errors.email
             }}</small> -->
         </div>
       </div>
+      <h4 class="mt-5">DOKUMENTE</h4>
       <div class="row mt-3">
-        <div class="col-lg-3 col-sm-6 col-xs-12">
+        <div class="col-lg-4 col-sm-6 col-xs-12">
           <label for="invoiceFile">Rechnung</label>
           <Field
             as="input"
@@ -221,7 +309,21 @@
               errors.email
             }}</small> -->
         </div>
-        <div class="col-lg-3 col-sm-6 col-xs-12">
+        <div class="col-lg-4 col-sm-6 col-xs-12">
+          <label for="equipmentImageFile">Bild</label>
+          <Field
+            as="input"
+            name="equipmentImageFile"
+            type="file"
+            class="form-control"
+            id="equipmentImageFile"
+            accept="image/*"
+          />
+          <!-- <small class="text-danger" v-if="errors.email">{{
+              errors.email
+            }}</small> -->
+        </div>
+        <div class="col-lg-4 col-sm-6 col-xs-12">
           <label for="manualFile">zusätzliche Dokumente</label>
           <Field
             multiple
@@ -237,21 +339,9 @@
             }}</small> -->
         </div>
       </div>
+
+      <h4 class="mt-5">LABEL & ID</h4>
       <div class="row mt-3">
-        <div class="col-lg-3 col-sm-6 col-xs-12">
-          <label for="equipmentImageFile">Bild</label>
-          <Field
-            as="input"
-            name="equipmentImageFile"
-            type="file"
-            class="form-control"
-            id="equipmentImageFile"
-            accept="image/*"
-          />
-          <!-- <small class="text-danger" v-if="errors.email">{{
-              errors.email
-            }}</small> -->
-        </div>
         <div class="col-lg-2 col-sm-4 col-xs-8">
           <label for="equipmentLabel">Label</label>
           <Field
@@ -307,6 +397,7 @@
     <UserNotification
       :show="this.showNotification"
       :notificationObj="this.notificationObj"
+      @user-input="handleNotification"
     ></UserNotification>
   </div>
 </template>
@@ -316,6 +407,7 @@ import UserNotification from "../Tools/UserNotification.vue";
 import { Form, Field } from "vee-validate";
 import * as yup from "yup";
 import store from "@store/index.js";
+import pruefkarteiblaetter from "@/config/pruefkarteiblaetter";
 
 export default {
   name: "EquipmentNew",
@@ -347,6 +439,7 @@ export default {
       maintenanceInterval: "",
       newEquipment: {
         maintenanceInterval: 0,
+        maintenanceCategory: "",
       },
       notificationObj: {
         type: "success",
@@ -362,6 +455,7 @@ export default {
       },
       showNotification: false,
       mode: "new",
+      reviewCategories: [],
     };
   },
 
@@ -410,6 +504,51 @@ export default {
         return false;
       }
     },
+    showMaintenanceSpecification() {
+      if (this.newEquipment.maintenanceCategory != "") {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+    maintenanceOptions() {
+      let optionsObj = {};
+      let optionsArray = [];
+      switch (this.newEquipment.maintenanceCategory) {
+        case "anschlagMittel":
+          for (
+            let i = 0;
+            i < pruefkarteiblaetter.data["anschlagMittel"].length;
+            i++
+          ) {
+            optionsObj = {
+              name: pruefkarteiblaetter.data["anschlagMittel"][i].name,
+              reviewScheduleId:
+                pruefkarteiblaetter.data["anschlagMittel"][i].id,
+            };
+            optionsArray.push(optionsObj);
+          }
+          return optionsArray;
+        case "technischeGeraete":
+          for (
+            let i = 0;
+            i < pruefkarteiblaetter.data["technischeGeraete"].length;
+            i++
+          ) {
+            optionsObj = {
+              name: pruefkarteiblaetter.data["technischeGeraete"][i].name,
+              reviewScheduleId:
+                pruefkarteiblaetter.data["technischeGeraete"][i].id,
+            };
+            optionsArray.push(optionsObj);
+          }
+          return optionsArray;
+
+        default:
+          return "";
+      }
+    },
     storageOptions() {
       switch (this.newEquipment.equipmentCategory) {
         case "RFA":
@@ -453,6 +592,29 @@ export default {
   methods: {
     saveInputData(event) {
       this.newEquipment[event.target.id] = event.target._value;
+    },
+    handleNotification(payload) {
+      this.newEquipment.maintenanceSchedule = payload;
+      this.showNotification = false;
+    },
+
+    maintenanceSchedule() {
+      this.notificationObj = {
+        type: "question",
+        title: "Wartungsplan",
+        message: "",
+        subMessage: "Wartungsart und -intervall wählen:",
+        iconAsButton: true,
+        button: false,
+        action: "saveMaintenanceSchedule",
+        icon: "faIcon fa-solid fa-circle-check",
+        timeOut: false,
+        componentName: "",
+        target: "",
+        id: "",
+        data: this.newEquipment.maintenanceSchedule,
+      };
+      this.showNotification = true;
     },
 
     getCategory(event) {
@@ -547,6 +709,8 @@ export default {
         latestReviewString: "",
         nextReviewTimeStamp: 0,
         nextReviewString: "",
+        maintenanceCategory: this.newEquipment.maintenanceCategory,
+        maintenanceSpecification: this.newEquipment.maintenanceSpecification,
       };
 
       //set data for reviews/maintenance
@@ -689,7 +853,11 @@ export default {
       this.equipmentCategory = this.newEquipment.equipmentCategory;
     }
   },
-  mounted() {},
+  mounted() {
+    for (let i = 0; i < pruefkarteiblaetter.config.length; i++) {
+      this.reviewCategories.push(pruefkarteiblaetter.config[i]);
+    }
+  },
 };
 </script>
 

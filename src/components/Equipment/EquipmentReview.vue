@@ -1,161 +1,254 @@
 <template>
-  <div class="container">
-    <div class="d-flex align-items-center justify-content-center">
-      <h1>EQUIPMENT-WARTUNG</h1>
-    </div>
-
+  <div class="container-flex">
+    <the-nav-bar @changeComponent="changeComponent"></the-nav-bar>
     <div class="container">
-      <Form>
+      <div class="d-flex align-items-center justify-content-center">
+        <h1>EQUIPMENT-WARTUNG</h1>
+      </div>
+      <div class="container">
+        <Form>
+          <div class="row d-flex align-items-center justify-content-center">
+            <div class="col-lg-6 col-xs-12">
+              <div class="input-group mt-3">
+                <Field
+                  as="input"
+                  name="searchId"
+                  type="number"
+                  class="form-control"
+                  id="searchId"
+                  v-model="this.searchId"
+                  @load="findEquipment"
+                  @keyup="findEquipment"
+                  placeholder="ID des Equipments eingeben..."
+                >
+                </Field>
+                <div class="input-group-append">
+                  <span v-if="!itemFound" class="input-group-text">
+                    <span
+                      class="fa-solid fa-magnifying-glass review-icon"
+                    ></span>
+                  </span>
+                  <span v-else class="input-group-text review-found">
+                    <span class="fa-solid fa-check review-icon"></span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Form>
+      </div>
+      <div class="container mt-4" v-if="itemFound">
         <div class="row d-flex align-items-center justify-content-center">
-          <div class="col-6 col-xs-12">
-            <div class="input-group mt-3">
-              <Field
-                as="input"
-                name="searchId"
-                type="number"
-                class="form-control"
-                id="searchId"
-                v-model="this.searchId"
-                @load="findEquipment"
-                @keyup="findEquipment"
-                placeholder="ID des Equipments eingeben..."
-              >
-              </Field>
-              <div class="input-group-append">
-                <span v-if="!itemFound" class="input-group-text">
-                  <span class="fa-solid fa-magnifying-glass review-icon"></span>
-                </span>
-                <span v-else class="input-group-text review-found">
-                  <span class="fa-solid fa-check review-icon"></span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Form>
-    </div>
-    <div class="container mt-4" v-if="itemFound">
-      <div class="row d-flex align-items-center justify-content-center">
-        <div class="col-10 col-xs-12">
-          <div class="card">
-            <div class="card-header review-card-header">
-              {{ this.item[0].equipmentName }}
-            </div>
-            <div class="card-body">
-              <span>
-                {{ this.item[0].manufacturer }}
-                {{ this.item[0].type }}
-              </span>
-              <div>
-                {{ this.item[0].label }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row mt-5 d-flex align-items-center justify-content-center">
-        <div
-          class="col-10 col-xs-12 mb-5"
-          v-for="reviewType in this.reviewTypes"
-          :key="reviewType.category"
-          :class="hideReviewType(reviewType.category)"
-        >
-          <details open>
-            <summary class="review-card-header">
-              <div class="card-body">
-                <tr class="card-text">
-                  <td class="card-header">{{ reviewType.name }}</td>
-                  <td :class="reviewHeadIcon(reviewType.category)"></td>
-                </tr>
-              </div>
-            </summary>
-            <div
-              v-for="(specification, index) in this.reviewSpecifications[
-                reviewType.category
-              ]"
-              :key="index"
-              class="card"
-              :class="doneStyle(reviewType.category, index)"
-            >
-              <div
-                class="card-body"
-                @click="setStatus(reviewType.category, index)"
-                type="button"
-              >
-                <tr class="card-text">
-                  <td :class="listIcon(reviewType.category, index)"></td>
-                  <td style="padding-left: 10px">
-                    {{ specification.toDo }}
-                  </td>
-                </tr>
-              </div>
-            </div>
-          </details>
-        </div>
-      </div>
-
-      <div class="row d-flex align-items-center justify-content-center">
-        <div class="col-10 col-xs-12">
-          <details open>
-            <summary class="review-card-header">
-              <div class="card-body">
-                <tr class="card-text">
-                  <td class="card-header">BEFUND</td>
-                </tr>
-              </div>
-            </summary>
+          <div class="col-lg-10 col-xs-12">
             <div class="card">
+              <div class="card-header review-card-header">
+                {{ this.item[0].equipmentName }}
+              </div>
               <div class="card-body">
-                <Form>
-                  <div class="container">
-                    <div class="row">
-                      <div class="col-12">
-                        <Field
-                          as="textarea"
-                          name="review"
-                          type="text"
-                          class="form-control review-textarea"
-                          id="reviewText"
-                          placeholder="Anmerkungen..."
-                        >
-                        </Field>
+                <span>
+                  {{ this.item[0].manufacturer }}
+                  {{ this.item[0].type }}
+                </span>
+                <div>
+                  {{ this.item[0].label }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-5 d-flex align-items-center justify-content-center">
+          <div
+            class="col-lg-10 col-xs-12 mb-5"
+            v-for="reviewType in this.reviewTypes"
+            :key="reviewType.category"
+            :class="hideReviewType(reviewType.category)"
+          >
+            <details open>
+              <summary class="review-card-header">
+                <div class="card-body">
+                  <tr class="card-text">
+                    <td class="card-header">{{ reviewType.name }}</td>
+                    <td :class="reviewHeadIcon(reviewType.category)"></td>
+                  </tr>
+                </div>
+              </summary>
+              <div
+                v-for="(specification, index) in this.reviewSpecifications[
+                  reviewType.category
+                ]"
+                :key="index"
+                class="card"
+                :class="doneStyle(reviewType.category, index)"
+              >
+                <div
+                  class="card-body"
+                  @click="setStatus(reviewType.category, index)"
+                  type="button"
+                >
+                  <tr class="card-text">
+                    <td :class="listIcon(reviewType.category, index)"></td>
+                    <td style="padding-left: 10px">
+                      {{ specification.toDo }}
+                    </td>
+                  </tr>
+                </div>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <div
+          v-if="this.loadTest"
+          class="row d-flex align-items-center justify-content-center"
+        >
+          <div
+            v-if="this.reviewSpecifications.loadTest.type == 'measurement'"
+            class="col-lg-10 col-xs-12 mb-5"
+          >
+            <details open>
+              <summary class="review-card-header">
+                <div class="card-body">
+                  <tr class="card-text">
+                    <td class="card-header">BELASTUNGSTEST</td>
+
+                    <!--                   <td :class="reviewHeadIcon(reviewType.category)"></td> -->
+                  </tr>
+                </div>
+              </summary>
+              <div
+                v-for="(loadTest, index) in this.reviewSpecifications.loadTest
+                  .loadTestData"
+                :key="index"
+                class="card"
+                @focusout="setMeasurementValues(index)"
+              >
+                <div class="card-body" type="button">
+                  <div class="card-text" style="padding-left: 10px">
+                    <div class="col-2 mb-2">
+                      {{ loadTest.toDo }}
+                    </div>
+                    <div class="col-2">
+                      <div class="input-group">
+                        <input
+                          :id="'measurement' + index"
+                          class="form-control"
+                          type="number"
+                          value="0"
+                        />
+                        <span class="input-group-text">mm</span>
                       </div>
                     </div>
                   </div>
-                </Form>
+                </div>
               </div>
-              <span class="card-footer">{{ this.displayedTime }}</span>
-            </div>
-          </details>
+            </details>
+          </div>
+          <div v-else class="col-lg-10 col-xs-12 mb-5">
+            <details open>
+              <summary class="review-card-header">
+                <div class="card-body">
+                  <tr class="card-text">
+                    <td class="card-header">BELASTUNGSTEST</td>
+                  </tr>
+                </div>
+              </summary>
+              <div class="card">
+                <div class="card-body">
+                  <tr class="card-text">
+                    <td class="fa-solid fa-circle-info"></td>
+                    <td style="padding-left: 10px">
+                      {{ this.reviewSpecifications.loadTest.information }}
+                    </td>
+                  </tr>
+                </div>
+              </div>
+              <div
+                v-for="(loadTest, index) in this.reviewSpecifications.loadTest
+                  .loadTestData"
+                :key="index"
+                class="card"
+                :class="loadTestDoneStyle(index)"
+              >
+                <div
+                  class="card-body"
+                  type="button"
+                  @click="setLoadTestStatus(index)"
+                >
+                  <tr class="card-text">
+                    <td :class="loadTestListIcon(index)"></td>
+                    <td style="padding-left: 10px">
+                      {{ loadTest.toDo }}
+                    </td>
+                  </tr>
+                </div>
+              </div>
+            </details>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <div class="container">
-      <div class="row mt-5 mb-5">
-        <div class="col-1"></div>
-        <div class="col">
-          <div class="d-grid">
-            <button class="btn btn-cancel" @click="cancelReview">
-              Abbrechen
-            </button>
+        <div class="row d-flex align-items-center justify-content-center">
+          <div class="col-lg-10 col-xs-12">
+            <details open>
+              <summary class="review-card-header">
+                <div class="card-body">
+                  <tr class="card-text">
+                    <td class="card-header">BEFUND</td>
+                  </tr>
+                </div>
+              </summary>
+              <div class="card">
+                <div class="card-body">
+                  <Form>
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-12">
+                          <Field
+                            as="textarea"
+                            name="review"
+                            type="text"
+                            class="form-control review-textarea"
+                            id="reviewText"
+                            placeholder="Anmerkungen..."
+                          >
+                          </Field>
+                        </div>
+                      </div>
+                    </div>
+                  </Form>
+                </div>
+                <span class="card-footer">{{ this.displayedTime }}</span>
+              </div>
+            </details>
           </div>
         </div>
-        <div class="col">
-          <div class="d-grid">
-            <button id="saveBtn" class="btn btn-ffp" @click="saveReview">
-              Speichern
-            </button>
-          </div>
-        </div>
-        <div class="col-1"></div>
       </div>
+
+      <div class="container">
+        <div class="row mt-5 mb-5">
+          <div class="col-1"></div>
+          <div class="col">
+            <div class="d-grid">
+              <button class="btn btn-cancel" @click="cancelReview">
+                Abbrechen
+              </button>
+            </div>
+          </div>
+          <div class="col">
+            <div class="d-grid">
+              <button id="saveBtn" class="btn btn-ffp" @click="saveReview">
+                Speichern
+              </button>
+            </div>
+          </div>
+          <div class="col-1"></div>
+        </div>
+      </div>
+      <UserNotification
+        :show="this.showNotification"
+        :notificationObj="this.notificationObj"
+      ></UserNotification>
     </div>
-    <UserNotification
-      :show="this.showNotification"
-      :notificationObj="this.notificationObj"
-    ></UserNotification>
   </div>
 </template>
 
@@ -164,6 +257,7 @@ import store from "@/store/index.js";
 import { Form, Field } from "vee-validate";
 import UserNotification from "../Tools/UserNotification.vue";
 import pruefkarteiblaetter from "@/config/pruefkarteiblaetter";
+import TheNavBar from "@components/TheNavBar.vue";
 
 /* import * as yup from "yup"; */
 
@@ -199,24 +293,27 @@ export default {
       reviewSpecifications: [],
       reviewTypes: [
         {
-          name: "SICHTPRÜFUNG",
+          name: "Sichtprüfung",
           category: "visualInspection",
         },
         {
-          name: "FUNKTIONSPRÜFUNG",
+          name: "Funktionsprüfung",
           category: "functionTest",
         },
         {
-          name: "ERGÄNZENDE PRÜFUNGEN",
+          name: "Sonstige",
           category: "supplementaryTest",
         },
       ],
+      loadTest: false,
+      loadTestSpecification: [],
     };
   },
   components: {
     Form,
     Field,
     UserNotification,
+    TheNavBar,
   },
   /*  props: {
     itemId: Number,
@@ -307,9 +404,44 @@ export default {
               inspections.push(specificationObj);
             }
             this.reviewSpecifications.supplementaryTest = inspections;
+            inspections = [];
+
+            if (this.item[0].maintenanceCategory === "leitern") {
+              this.loadTest = true;
+              for (
+                let i = 0;
+                i < pruefkarteiblaetter.data.leitern.length;
+                i++
+              ) {
+                if (
+                  this.item[0].maintenanceSpecification ===
+                  pruefkarteiblaetter.data.leitern[i].id
+                ) {
+                  for (
+                    let j = 0;
+                    j <
+                    pruefkarteiblaetter.data.leitern[i].loadTest.values.length;
+                    j++
+                  ) {
+                    let specificationObj = {
+                      toDo: pruefkarteiblaetter.data.leitern[i].loadTest.values[
+                        j
+                      ],
+                      performed: false,
+                    };
+                    inspections.push(specificationObj);
+                  }
+                  this.reviewSpecifications.loadTest = {
+                    type: pruefkarteiblaetter.data.leitern[i].loadTest.type,
+                    information:
+                      pruefkarteiblaetter.data.leitern[i].loadTest.information,
+                    loadTestData: inspections,
+                  };
+                }
+              }
+            }
           }
         }
-
         this.getTimeStamp();
       }
     },
@@ -352,9 +484,27 @@ export default {
       this.reviewDate = `${year}-${month}-${day}`;
     },
 
+    setMeasurementValues(index) {
+      let measurementValue = Number(
+        document.getElementById("measurement" + index).value
+      );
+      if (document.getElementById("measurement" + index).value != "") {
+        this.reviewSpecifications["loadTest"].loadTestData[
+          index
+        ].performed = true;
+      }
+      this.reviewSpecifications["loadTest"].loadTestData[
+        index
+      ].measurementValue = measurementValue;
+    },
+
     setStatus(reviewType, index) {
       this.reviewSpecifications[reviewType][index].performed =
         !this.reviewSpecifications[reviewType][index].performed;
+    },
+    setLoadTestStatus(index) {
+      this.reviewSpecifications["loadTest"].loadTestData[index].performed =
+        !this.reviewSpecifications["loadTest"].loadTestData[index].performed;
     },
 
     doneStyle(reviewType, index) {
@@ -364,9 +514,29 @@ export default {
         return "";
       }
     },
+    loadTestDoneStyle(index) {
+      if (
+        this.reviewSpecifications["loadTest"].loadTestData[index].performed ===
+        true
+      ) {
+        return "reviewDone";
+      } else {
+        return "";
+      }
+    },
 
     listIcon(reviewType, index) {
       if (this.reviewSpecifications[reviewType][index].performed === true) {
+        return "fa-solid fa-check";
+      } else {
+        return "fa-regular fa-circle";
+      }
+    },
+    loadTestListIcon(index) {
+      if (
+        this.reviewSpecifications["loadTest"].loadTestData[index].performed ===
+        true
+      ) {
         return "fa-solid fa-check";
       } else {
         return "fa-regular fa-circle";

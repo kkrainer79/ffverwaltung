@@ -1,404 +1,433 @@
 <template>
-  <div class="container">
-    <h1>{{ this.pageTitle }}</h1>
-    <Form
-      id="newEquipmentForm"
-      class="text-start mt-5"
-      @submit="submitData"
-      :validation-schema="schema"
-      v-slot="{ errors }"
-      :key="this.newEquipment.equipmentCategory"
-    >
-      <!-- :key="this.equipmentCategory" -->
+  <div class="container-flex">
+    <the-nav-bar @changeComponent="changeComponent"></the-nav-bar>
+    <div class="container">
+      <h1>{{ this.pageTitle }}</h1>
+      <Form
+        id="newEquipmentForm"
+        class="text-start mt-5"
+        @submit="submitData"
+        :validation-schema="schema"
+        v-slot="{ errors }"
+        :key="this.newEquipment.equipmentCategory"
+      >
+        <!-- :key="this.equipmentCategory" -->
 
-      <h4>BASISDATEN</h4>
-      <div class="row">
-        <div class="col-lg-3 col-sm-6 col-xs-10">
-          <label for="equipmentName">Bezeichnung*</label>
-          <Field
-            as="input"
-            name="equipmentName"
-            type="text"
-            class="form-control"
-            id="equipmentName"
-            :value="this.newEquipment.equipmentName"
-            @change="saveInputData"
-          />
-          <small class="text-danger" v-if="errors.equipmentName">{{
-            errors.equipmentName
-          }}</small>
-        </div>
-        <div class="col-lg-3 col-sm-6 col-xs-10">
-          <label for="manufacturer">Hersteller/Marke*</label>
-          <Field
-            as="input"
-            name="manufacturer"
-            type="text"
-            class="form-control"
-            id="manufacturer"
-            :value="this.newEquipment.manufacturer"
-            @change="saveInputData"
-          />
-          <!-- <small class="text-danger" v-if="errors.email">{{
-              errors.email
-            }}</small> -->
-        </div>
-        <div class="col-lg-3 col-sm-6 col-xs-12">
-          <label for="type">Typenbezeichnung</label>
-          <Field
-            as="input"
-            name="type"
-            type="text"
-            class="form-control"
-            id="type"
-            :value="this.newEquipment.type"
-            @change="saveInputData"
-          />
-          <!-- <small class="text-danger" v-if="errors.email">{{
-              errors.email
-            }}</small> -->
-        </div>
-        <div class="col-lg-3 col-sm-6 col-xs-12">
-          <label for="type">Herstellungsjahr</label>
-          <Field
-            as="input"
-            name="manufacturingYear"
-            type="number"
-            class="form-control"
-            id="type"
-            :value="this.newEquipment.type"
-            @change="saveInputData"
-          />
-          <!-- <small class="text-danger" v-if="errors.email">{{
-              errors.email
-            }}</small> -->
-        </div>
-      </div>
-
-      <div class="row mt-3"></div>
-      <div class="row">
-        <div class="col-lg-3 col-sm-6 col-xs-12">
-          <label for="equipmentCategory">Kategorie*</label>
-          <Field
-            as="select"
-            name="equipmentCategory"
-            class="form-control"
-            id="equipmentCategory"
-            :value="this.newEquipment.equipmentCategory"
-            @change="getCategory"
-          >
-            <option value="" disabled>Bitte wählen</option>
-            <option value="RFA" name="RFA">RFA</option>
-            <option value="TLF" name="TLF">TLF</option>
-            <option value="MTF" name="MTF">MTF</option>
-            <option value="DRO" name="Drohne">Drohne</option>
-            <option value="WSD" name="Wasserdienst">Wasserdienst</option>
-            <option value="FWH" name="Feuerwehrhaus">Feuerwehrhaus</option>
-            <option value="SON" name="Sonstige">Sonstige</option>
-          </Field>
-        </div>
-        <div v-if="this.subStorage" class="col-lg-3 col-sm-6 col-xs-12">
-          <label for="equipmentCategory">Lagerort</label>
-          <Field
-            as="select"
-            name="storageLocation"
-            class="form-control"
-            id="storageLocation"
-            :value="this.newEquipment.storageLocation"
-            @change="getCategory"
-          >
-            <option value="" disabled>Bitte wählen</option>
-            <option
-              v-for="option in storageOptions"
-              :key="option"
-              :value="option"
-              :name="option"
-            >
-              {{ option }}
-            </option>
-          </Field>
-        </div>
-      </div>
-      <h4 class="mt-5">LIEFERANT</h4>
-      <div class="row">
-        <div class="col-lg-3 col-sm-6 col-xs-12">
-          <label for="dealer">Händler</label>
-          <Field
-            as="input"
-            name="dealer"
-            type="text"
-            class="form-control"
-            id="dealer"
-            placeholder="Firma"
-            :value="this.newEquipment.dealer"
-            @change="saveInputData"
-          />
-        </div>
-        <div class="col-lg-3 col-sm-6 col-xs-12">
-          <label for="dealerName">Händler-Kontakt</label>
-          <Field
-            as="input"
-            name="dealerName"
-            type="text"
-            class="form-control"
-            id="dealerName"
-            placeholder="Name, Telefon etc."
-            :value="this.newEquipment.dealerName"
-            @change="saveInputData"
-          />
-          <!-- <small class="text-danger" v-if="errors.email">{{
-              errors.email
-            }}</small> -->
-        </div>
-      </div>
-      <h4 class="mt-5">INSTANDHALTUNG</h4>
-      <div class="row mt-3">
-        <div class="col-lg-2 col-md-3">
-          <label for="purchaseDate">Einführungsdatum*</label>
-          <Field
-            as="input"
-            name="purchaseDate"
-            type="date"
-            class="form-control"
-            id="purchaseDate"
-            :value="this.newEquipment.purchaseDate"
-            @change="saveInputData"
-          />
-          <small class="text-danger" v-if="errors.purchaseDate">{{
-            errors.purchaseDate
-          }}</small>
-        </div>
-        <div class="col-lg-1 col-md-2">
-          <label for="purchasePrice">Preis</label>
-          <Field
-            as="input"
-            name="purchasePrice"
-            type="number"
-            class="form-control"
-            id="purchasePrice"
-            :value="this.newEquipment.purchasePrice"
-            @change="saveInputData"
-          />
-          <small class="text-danger" v-if="errors.purchasePrice">{{
-            errors.purchasePrice
-          }}</small>
-        </div>
-
-        <div class="col-lg-1 col-md-2">
-          <label for="serviceLife">Lebensdauer</label>
-          <Field
-            as="input"
-            name="serviceLife"
-            type="number"
-            class="form-control"
-            id="serviceLife"
-            placeholder="Jahre"
-            :value="this.newEquipment.serviceLife"
-            @change="saveInputData"
-          />
-          <small class="text-danger" v-if="errors.serviceLife">{{
-            errors.serviceLife
-          }}</small>
-        </div>
-        <div class="col-lg-4 col-md-5 d-grid">
-          <label for="mainentanceCategory">ÖBFV-Wartungskategorie</label>
-          <Field
-            as="select"
-            name="maintenanceCategory"
-            class="form-control"
-            id="maintenanceCategory"
-            :value="this.newEquipment.maintenanceCategory"
-            @change="saveInputData"
-          >
-            <option value="" disabled>Bitte wählen</option>
-            <option
-              v-for="option in this.reviewCategories"
-              :value="option.categoryName"
-              :name="option.categoryName"
-              :key="option.categoryName"
-            >
-              {{ option.categoryDisplayName }}
-            </option>
-          </Field>
-          <!-- <button
-            class="btn btn-define"
-            type="button"
-            @click="maintenanceSchedule"
-          >
-            Wartungsplan
-          </button> -->
-          <!-- <Field
-            as="select"
-            name="maintenanceInterval"
-            class="form-control"
-            id="maintenanceInterval"
-            :value="this.newEquipment.maintenanceInterval"
-            @change="saveInputData"
-          >
-            option values in milliseconds! 
-            <option value="0" selected>bei Bedarf</option>
-            <option value="2628000000">monatlich</option>
-            <option value="7884000000">vierteljährlich</option>
-            <option value="15768000000">halbjährlich</option>
-            <option value="31536000000">jährlich</option>
-          </Field> -->
-          <!-- <small class="text-danger" v-if="errors.email">{{
-              errors.email
-            }}</small> -->
-        </div>
-        <div v-if="showMaintenanceSpecification" class="col-lg-4 col-md-5 d-grid">
-          <label for="mainentanceSpecification">Wartungsplan</label>
-          <Field
-            as="select"
-            name="maintenanceSpecification"
-            class="form-control"
-            id="maintenanceSpecification"
-            :value="this.newEquipment.maintenanceSpecification"
-            @change="saveInputData"
-          >
-            <option value="" disabled>Bitte wählen</option>
-            <option
-              v-for="option in maintenanceOptions"
-              :value="option.reviewScheduleId"
-              :name="option.name"
-              :key="option.reviewScheduleId"
-            >
-              {{ option.name }}
-            </option>
-          </Field>
-          <!-- <button
-            class="btn btn-define"
-            type="button"
-            @click="maintenanceSchedule"
-          >
-            Wartungsplan
-          </button> -->
-          <!-- <Field
-            as="select"
-            name="maintenanceInterval"
-            class="form-control"
-            id="maintenanceInterval"
-            :value="this.newEquipment.maintenanceInterval"
-            @change="saveInputData"
-          >
-            option values in milliseconds! 
-            <option value="0" selected>bei Bedarf</option>
-            <option value="2628000000">monatlich</option>
-            <option value="7884000000">vierteljährlich</option>
-            <option value="15768000000">halbjährlich</option>
-            <option value="31536000000">jährlich</option>
-          </Field> -->
-          <!-- <small class="text-danger" v-if="errors.email">{{
-              errors.email
-            }}</small> -->
-        </div>
-      </div>
-      <h4 class="mt-5">DOKUMENTE</h4>
-      <div class="row mt-3">
-        <div class="col-lg-4 col-sm-6 col-xs-12">
-          <label for="invoiceFile">Rechnung</label>
-          <Field
-            as="input"
-            name="invoiceFile"
-            type="file"
-            class="form-control"
-            id="invoiceFile"
-            accept=".pdf, .doc"
-          />
-          <!-- <small class="text-danger" v-if="errors.email">{{
-              errors.email
-            }}</small> -->
-        </div>
-        <div class="col-lg-4 col-sm-6 col-xs-12">
-          <label for="equipmentImageFile">Bild</label>
-          <Field
-            as="input"
-            name="equipmentImageFile"
-            type="file"
-            class="form-control"
-            id="equipmentImageFile"
-            accept="image/*"
-          />
-          <!-- <small class="text-danger" v-if="errors.email">{{
-              errors.email
-            }}</small> -->
-        </div>
-        <div class="col-lg-4 col-sm-6 col-xs-12">
-          <label for="manualFile">zusätzliche Dokumente</label>
-          <Field
-            multiple
-            as="input"
-            name="documentFile"
-            type="file"
-            class="form-control"
-            id="documentFile"
-            accept=".pdf, .doc"
-          />
-          <!-- <small class="text-danger" v-if="errors.email">{{
-              errors.email
-            }}</small> -->
-        </div>
-      </div>
-
-      <h4 class="mt-5">LABEL & ID</h4>
-      <div class="row mt-3">
-        <div class="col-lg-2 col-sm-4 col-xs-8">
-          <label for="equipmentLabel">Label</label>
-          <Field
-            as="input"
-            name="label"
-            type="text"
-            class="form-control"
-            id="label"
-            :value="this.label"
-            readonly
-          >
-          </Field>
-        </div>
-        <div class="col-lg-1 col-sm-2 col-xs-4">
-          <label for="equipmentId">ID</label>
-          <Field
-            as="input"
-            name="equipmentId"
-            type="text"
-            class="form-control"
-            id="equipmentId"
-            :value="this.id"
-            readonly
-          >
-          </Field>
-        </div>
-      </div>
-      <div class="row mt-4">
-        <div class="col-lg-6 d-flex align-items-center justify-content-center">
-          <div class="col d-grid">
-            <button
-              type="button"
-              v-if="!message"
-              class="btn btn-cancel"
-              @click="cancelNewEquipment"
-            >
-              <span> Abbrechen </span>
-            </button>
+        <h4>BASISDATEN</h4>
+        <div class="row">
+          <div class="col-lg-3 col-sm-6 col-xs-10">
+            <label for="equipmentName">Bezeichnung*</label>
+            <Field
+              as="input"
+              name="equipmentName"
+              type="text"
+              class="form-control"
+              id="equipmentName"
+              placeholder="Name"
+              :value="this.newEquipment.equipmentName"
+              @change="saveInputData"
+            />
+            <small class="text-danger" v-if="errors.equipmentName">{{
+              errors.equipmentName
+            }}</small>
           </div>
-          <div class="col"></div>
-          <div class="col d-grid">
-            <button class="btn btn-ffp" v-if="!message">
-              <span>Speichern</span>
-            </button>
+          <div class="col-lg-3 col-sm-6 col-xs-10">
+            <label for="manufacturer">Hersteller/Marke*</label>
+            <Field
+              as="input"
+              name="manufacturer"
+              type="text"
+              class="form-control"
+              id="manufacturer"
+              placeholder="Hersteller"
+              :value="this.newEquipment.manufacturer"
+              @change="saveInputData"
+            />
+            <!-- <small class="text-danger" v-if="errors.email">{{
+              errors.email
+            }}</small> -->
+          </div>
+          <div class="col-lg-3 col-sm-6 col-xs-12">
+            <label for="type">Typenbezeichnung</label>
+            <Field
+              as="input"
+              name="type"
+              type="text"
+              class="form-control"
+              id="type"
+              placeholder="---"
+              :value="this.newEquipment.type"
+              @change="saveInputData"
+            />
+            <!-- <small class="text-danger" v-if="errors.email">{{
+              errors.email
+            }}</small> -->
+          </div>
+          <div class="col-lg-3 col-sm-6 col-xs-12">
+            <label for="type">Seriennummer</label>
+            <Field
+              as="input"
+              name="serialNumber"
+              type="text"
+              class="form-control"
+              id="type"
+              placeholder="---"
+              :value="this.newEquipment.serialNumber"
+              @change="saveInputData"
+            />
+            <!-- <small class="text-danger" v-if="errors.email">{{
+              errors.email
+            }}</small> -->
+          </div>
+        </div>
 
-            <div class="col-10 offset-1 text-danger text-center mt-2">
-              <!-- <small v-if="error">{{ errorText }}</small> -->
+        <div class="row mt-3"></div>
+        <div class="row">
+          <div class="col-lg-3 col-sm-6 col-xs-12">
+            <label for="type">Herstellungsjahr</label>
+            <Field
+              as="input"
+              name="manufacturingYear"
+              type="number"
+              class="form-control"
+              id="type"
+              placeholder="---"
+              :value="this.newEquipment.manufacturingYear"
+              @change="saveInputData"
+            />
+            <!-- <small class="text-danger" v-if="errors.email">{{
+              errors.email
+            }}</small> -->
+          </div>
+          <div class="col-lg-3 col-sm-6 col-xs-12">
+            <label for="equipmentCategory">Kategorie*</label>
+            <Field
+              as="select"
+              name="equipmentCategory"
+              class="form-control"
+              id="equipmentCategory"
+              :value="this.newEquipment.equipmentCategory"
+              @change="getCategory"
+            >
+              <option value="" disabled>Bitte wählen</option>
+              <option value="RFA" name="RFA">RFA</option>
+              <option value="TLF" name="TLF">TLF</option>
+              <option value="MTF" name="MTF">MTF</option>
+              <option value="MZF" name="MTF">MZF</option>
+              <option value="DRO" name="Drohne">Drohne</option>
+              <option value="WSD" name="Wasserdienst">Wasserdienst</option>
+              <option value="FWH" name="Feuerwehrhaus">Feuerwehrhaus</option>
+              <option value="SON" name="Sonstige">Sonstige</option>
+            </Field>
+          </div>
+          <div v-if="this.subStorage" class="col-lg-3 col-sm-6 col-xs-12">
+            <label for="equipmentCategory">Lagerort</label>
+            <Field
+              as="select"
+              name="storageLocation"
+              class="form-control"
+              id="storageLocation"
+              :value="this.newEquipment.storageLocation"
+              @change="getCategory"
+            >
+              <option value="" disabled>Bitte wählen</option>
+              <option
+                v-for="option in storageOptions"
+                :key="option"
+                :value="option"
+                :name="option"
+              >
+                {{ option }}
+              </option>
+            </Field>
+          </div>
+        </div>
+        <h4 class="mt-5">LIEFERANT</h4>
+        <div class="row">
+          <div class="col-lg-3 col-sm-6 col-xs-12">
+            <label for="dealer">Händler</label>
+            <Field
+              as="input"
+              name="dealer"
+              type="text"
+              class="form-control"
+              id="dealer"
+              placeholder="Firma"
+              :value="this.newEquipment.dealer"
+              @change="saveInputData"
+            />
+          </div>
+          <div class="col-lg-3 col-sm-6 col-xs-12">
+            <label for="dealerName">Händler-Kontakt</label>
+            <Field
+              as="input"
+              name="dealerName"
+              type="text"
+              class="form-control"
+              id="dealerName"
+              placeholder="Name, Telefon etc."
+              :value="this.newEquipment.dealerName"
+              @change="saveInputData"
+            />
+            <!-- <small class="text-danger" v-if="errors.email">{{
+              errors.email
+            }}</small> -->
+          </div>
+        </div>
+        <h4 class="mt-5">INSTANDHALTUNG</h4>
+        <div class="row mt-3">
+          <div class="col-lg-2 col-md-3">
+            <label for="purchaseDate">Einführungsdatum*</label>
+            <Field
+              as="input"
+              name="purchaseDate"
+              type="date"
+              class="form-control"
+              id="purchaseDate"
+              :value="this.newEquipment.purchaseDate"
+              @change="saveInputData"
+            />
+            <small class="text-danger" v-if="errors.purchaseDate">{{
+              errors.purchaseDate
+            }}</small>
+          </div>
+          <div class="col-lg-1 col-md-2">
+            <label for="purchasePrice">Preis</label>
+            <Field
+              as="input"
+              name="purchasePrice"
+              type="number"
+              class="form-control"
+              id="purchasePrice"
+              :value="this.newEquipment.purchasePrice"
+              @change="saveInputData"
+            />
+            <small class="text-danger" v-if="errors.purchasePrice">{{
+              errors.purchasePrice
+            }}</small>
+          </div>
+
+          <div class="col-lg-1 col-md-2">
+            <label for="serviceLife">Lebensdauer</label>
+            <Field
+              as="input"
+              name="serviceLife"
+              type="number"
+              class="form-control"
+              id="serviceLife"
+              placeholder="Jahre"
+              :value="this.newEquipment.serviceLife"
+              @change="saveInputData"
+            />
+            <small class="text-danger" v-if="errors.serviceLife">{{
+              errors.serviceLife
+            }}</small>
+          </div>
+          <div class="col-lg-4 col-md-5 d-grid">
+            <label for="mainentanceCategory">ÖBFV-Wartungskategorie</label>
+            <Field
+              as="select"
+              name="maintenanceCategory"
+              class="form-control"
+              id="maintenanceCategory"
+              :value="this.newEquipment.maintenanceCategory"
+              @change="saveInputData"
+            >
+              <option value="" disabled>Bitte wählen</option>
+              <option
+                v-for="option in this.reviewCategories"
+                :value="option.categoryName"
+                :name="option.categoryName"
+                :key="option.categoryName"
+              >
+                {{ option.categoryDisplayName }}
+              </option>
+            </Field>
+            <!-- <button
+            class="btn btn-define"
+            type="button"
+            @click="maintenanceSchedule"
+          >
+            Wartungsplan
+          </button> -->
+            <!-- <Field
+            as="select"
+            name="maintenanceInterval"
+            class="form-control"
+            id="maintenanceInterval"
+            :value="this.newEquipment.maintenanceInterval"
+            @change="saveInputData"
+          >
+            option values in milliseconds! 
+            <option value="0" selected>bei Bedarf</option>
+            <option value="2628000000">monatlich</option>
+            <option value="7884000000">vierteljährlich</option>
+            <option value="15768000000">halbjährlich</option>
+            <option value="31536000000">jährlich</option>
+          </Field> -->
+            <!-- <small class="text-danger" v-if="errors.email">{{
+              errors.email
+            }}</small> -->
+          </div>
+          <div
+            v-if="showMaintenanceSpecification"
+            class="col-lg-4 col-md-5 d-grid"
+          >
+            <label for="mainentanceSpecification">Wartungsplan</label>
+            <Field
+              as="select"
+              name="maintenanceSpecification"
+              class="form-control"
+              id="maintenanceSpecification"
+              :value="this.newEquipment.maintenanceSpecification"
+              @change="saveInputData"
+            >
+              <option value="" disabled>Bitte wählen</option>
+              <option
+                v-for="option in maintenanceOptions"
+                :value="option.reviewScheduleId"
+                :name="option.name"
+                :key="option.reviewScheduleId"
+              >
+                {{ option.name }}
+              </option>
+            </Field>
+            <!-- <button
+            class="btn btn-define"
+            type="button"
+            @click="maintenanceSchedule"
+          >
+            Wartungsplan
+          </button> -->
+            <!-- <Field
+            as="select"
+            name="maintenanceInterval"
+            class="form-control"
+            id="maintenanceInterval"
+            :value="this.newEquipment.maintenanceInterval"
+            @change="saveInputData"
+          >
+            option values in milliseconds! 
+            <option value="0" selected>bei Bedarf</option>
+            <option value="2628000000">monatlich</option>
+            <option value="7884000000">vierteljährlich</option>
+            <option value="15768000000">halbjährlich</option>
+            <option value="31536000000">jährlich</option>
+          </Field> -->
+            <!-- <small class="text-danger" v-if="errors.email">{{
+              errors.email
+            }}</small> -->
+          </div>
+        </div>
+        <h4 class="mt-5">DOKUMENTE</h4>
+        <div class="row mt-3">
+          <div class="col-lg-4 col-sm-6 col-xs-12">
+            <label for="invoiceFile">Rechnung</label>
+            <Field
+              as="input"
+              name="invoiceFile"
+              type="file"
+              class="form-control"
+              id="invoiceFile"
+              accept=".pdf, .doc"
+            />
+            <!-- <small class="text-danger" v-if="errors.email">{{
+              errors.email
+            }}</small> -->
+          </div>
+          <div class="col-lg-4 col-sm-6 col-xs-12">
+            <label for="equipmentImageFile">Bild</label>
+            <Field
+              as="input"
+              name="equipmentImageFile"
+              type="file"
+              class="form-control"
+              id="equipmentImageFile"
+              accept="image/*"
+            />
+            <!-- <small class="text-danger" v-if="errors.email">{{
+              errors.email
+            }}</small> -->
+          </div>
+          <div class="col-lg-4 col-sm-6 col-xs-12">
+            <label for="manualFile">zusätzliche Dokumente</label>
+            <Field
+              multiple
+              as="input"
+              name="documentFile"
+              type="file"
+              class="form-control"
+              id="documentFile"
+              accept=".pdf, .doc"
+            />
+            <!-- <small class="text-danger" v-if="errors.email">{{
+              errors.email
+            }}</small> -->
+          </div>
+        </div>
+
+        <h4 class="mt-5">LABEL & ID</h4>
+        <div class="row mt-3">
+          <div class="col-lg-2 col-sm-4 col-xs-8">
+            <label for="equipmentLabel">Label</label>
+            <Field
+              as="input"
+              name="label"
+              type="text"
+              class="form-control"
+              id="label"
+              :value="this.label"
+              readonly
+            >
+            </Field>
+          </div>
+          <div class="col-lg-1 col-sm-2 col-xs-4">
+            <label for="equipmentId">ID</label>
+            <Field
+              as="input"
+              name="equipmentId"
+              type="text"
+              class="form-control"
+              id="equipmentId"
+              :value="this.id"
+              readonly
+            >
+            </Field>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div
+            class="col-lg-6 mb-5 d-flex align-items-center justify-content-center"
+          >
+            <div class="col d-grid">
+              <button
+                type="button"
+                v-if="!message"
+                class="btn btn-cancel"
+                @click="cancelNewEquipment"
+              >
+                <span> Abbrechen </span>
+              </button>
+            </div>
+            <div class="col"></div>
+            <div class="col d-grid">
+              <button class="btn btn-ffp" v-if="!message">
+                <span>Speichern</span>
+              </button>
+
+              <div class="col-10 offset-1 text-danger text-center mt-2">
+                <!-- <small v-if="error">{{ errorText }}</small> -->
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </Form>
-    <UserNotification
-      :show="this.showNotification"
-      :notificationObj="this.notificationObj"
-      @user-input="handleNotification"
-    ></UserNotification>
+      </Form>
+      <UserNotification
+        :show="this.showNotification"
+        :notificationObj="this.notificationObj"
+        @user-input="handleNotification"
+      ></UserNotification>
+    </div>
   </div>
 </template>
 
@@ -408,6 +437,7 @@ import { Form, Field } from "vee-validate";
 import * as yup from "yup";
 import store from "@store/index.js";
 import pruefkarteiblaetter from "@/config/pruefkarteiblaetter";
+import TheNavBar from "@components/TheNavBar.vue";
 
 export default {
   name: "EquipmentNew",
@@ -463,6 +493,7 @@ export default {
     Form,
     Field,
     UserNotification,
+    TheNavBar,
   },
 
   computed: {
@@ -515,39 +546,23 @@ export default {
     maintenanceOptions() {
       let optionsObj = {};
       let optionsArray = [];
-      switch (this.newEquipment.maintenanceCategory) {
-        case "anschlagMittel":
-          for (
-            let i = 0;
-            i < pruefkarteiblaetter.data["anschlagMittel"].length;
-            i++
-          ) {
-            optionsObj = {
-              name: pruefkarteiblaetter.data["anschlagMittel"][i].name,
-              reviewScheduleId:
-                pruefkarteiblaetter.data["anschlagMittel"][i].id,
-            };
-            optionsArray.push(optionsObj);
-          }
-          return optionsArray;
-        case "technischeGeraete":
-          for (
-            let i = 0;
-            i < pruefkarteiblaetter.data["technischeGeraete"].length;
-            i++
-          ) {
-            optionsObj = {
-              name: pruefkarteiblaetter.data["technischeGeraete"][i].name,
-              reviewScheduleId:
-                pruefkarteiblaetter.data["technischeGeraete"][i].id,
-            };
-            optionsArray.push(optionsObj);
-          }
-          return optionsArray;
-
-        default:
-          return "";
+      for (
+        let i = 0;
+        i <
+        pruefkarteiblaetter.data[this.newEquipment.maintenanceCategory].length;
+        i++
+      ) {
+        optionsObj = {
+          name: pruefkarteiblaetter.data[this.newEquipment.maintenanceCategory][
+            i
+          ].name,
+          reviewScheduleId:
+            pruefkarteiblaetter.data[this.newEquipment.maintenanceCategory][i]
+              .id,
+        };
+        optionsArray.push(optionsObj);
       }
+      return optionsArray;
     },
     storageOptions() {
       switch (this.newEquipment.equipmentCategory) {
@@ -709,8 +724,10 @@ export default {
         latestReviewString: "",
         nextReviewTimeStamp: 0,
         nextReviewString: "",
+        serialNumber: this.newEquipment.serialNumber,
         maintenanceCategory: this.newEquipment.maintenanceCategory,
         maintenanceSpecification: this.newEquipment.maintenanceSpecification,
+        manufacturingYear: this.newEquipment.manufacturingYear,
       };
 
       //set data for reviews/maintenance
